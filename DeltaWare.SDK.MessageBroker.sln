@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker", "src\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.csproj", "{78AD9EF9-5758-4F00-BAED-4F7A1418613E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker.RabbitMQ", "src\DeltaWare.SDK.MessageBroker.RabbitMQ\DeltaWare.SDK.MessageBroker.RabbitMQ.csproj", "{C6C593BB-FC50-4BBA-BBE7-2CC5CCD8F977}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker.ServiceBus", "src\DeltaWare.SDK.MessageBroker.ServiceBus\DeltaWare.SDK.MessageBroker.ServiceBus.csproj", "{217343DF-91D6-4F3C-A56D-09D512902DB1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78AD9EF9-5758-4F00-BAED-4F7A1418613E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78AD9EF9-5758-4F00-BAED-4F7A1418613E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78AD9EF9-5758-4F00-BAED-4F7A1418613E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78AD9EF9-5758-4F00-BAED-4F7A1418613E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6C593BB-FC50-4BBA-BBE7-2CC5CCD8F977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6C593BB-FC50-4BBA-BBE7-2CC5CCD8F977}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6C593BB-FC50-4BBA-BBE7-2CC5CCD8F977}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6C593BB-FC50-4BBA-BBE7-2CC5CCD8F977}.Release|Any CPU.Build.0 = Release|Any CPU
+		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4800D7A5-C2F7-48F7-A1EC-9731488A92E6}
+	EndGlobalSection
+EndGlobal
