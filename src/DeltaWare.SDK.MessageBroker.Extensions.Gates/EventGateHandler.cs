@@ -1,22 +1,46 @@
-﻿using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Processors;
+﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
+using DeltaWare.SDK.MessageBroker.Messages;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates
 {
-    internal class EventGateHandler<TKey> : MessageHandler<TKey> where TKey : Message
+    internal class EventGateHandler<TKey> : EventGate<TKey>, IEventGateHandler where TKey : Message
     {
-        public EventGate<TKey> Gate { get; }
+        private readonly IEventGateHandlerBinder _binder;
 
-        public EventGateHandler(TKey key, TimeSpan timeout)
+        public EventGateHandler(TKey key, TimeSpan timeout, IEventGateHandlerBinder binder) : base(key, timeout)
         {
-            Gate = new EventGate<TKey>(key, timeout);
+            _binder = binder;
+            _binder.Bind(this);
         }
 
-        protected override ValueTask ProcessAsync(TKey message)
+        public void TryOpen(Message message)
         {
-            Gate.TryUnlock(message);
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(GetType().Name);
+            }
 
-            return ValueTask.CompletedTask;
+            if (message is TKey key)
+            {
+                base.TryOpen(key);
+            }
+        }
+
+        private bool _disposed;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _binder.Unbind(this);
+            }
+
+            _disposed = true;
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding.Enums;
+﻿using DeltaWare.SDK.Core.Validators;
+using DeltaWare.SDK.MessageBroker.Binding.Enums;
 using System;
-using DeltaWare.SDK.Core.Validators;
 
 namespace DeltaWare.SDK.MessageBroker.Binding.Attributes
 {

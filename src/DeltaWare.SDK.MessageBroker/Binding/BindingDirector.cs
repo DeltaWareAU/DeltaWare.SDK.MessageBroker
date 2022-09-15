@@ -44,7 +44,7 @@ namespace DeltaWare.SDK.MessageBroker.Binding
                 .GetMessageTypesFromAssemblies(assemblies)
                 .ForEach(BindMessage);
         }
-        
+
         #region Binding
 
         private void BindProcessor(Type type)

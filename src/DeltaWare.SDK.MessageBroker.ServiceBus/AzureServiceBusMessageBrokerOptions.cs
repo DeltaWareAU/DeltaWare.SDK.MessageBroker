@@ -2,25 +2,29 @@
 using DeltaWare.SDK.MessageBroker.Broker;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Broker;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Options;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 // ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.DependencyInjection
+namespace DeltaWare.SDK.MessageBroker
 {
-    public static class AzureServiceBusServiceCollection
+    public static class AzureServiceBusMessageBrokerOptions
     {
-        public static IServiceCollection UseAzureServiceBus(this IServiceCollection serviceCollection, string connectionString)
+        public static void UseAzureServiceBus(this IMessageBrokerOptions options, string connectionString)
         {
+            if (options is not MessageBrokerOptions brokerOptions)
+            {
+                throw new ArgumentException();
+            }
+
             StringValidator.ThrowOnNullOrWhitespace(connectionString, nameof(connectionString));
 
-            serviceCollection
+            brokerOptions.Services
                 .AddSingleton<IServiceBusMessageBrokerOptions>(new ServiceBusMessageBrokerOptions
                 {
                     ConnectionString = connectionString
                 })
-                .UseMessageBroker()
                 .AddSingleton<IMessageBroker, ServiceBusMessageBroker>();
-
-            return serviceCollection;
         }
     }
 }
