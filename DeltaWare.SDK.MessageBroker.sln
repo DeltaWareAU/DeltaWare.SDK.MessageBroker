@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker.ServiceBus", "src\DeltaWare.SDK.MessageBroker.ServiceBus\DeltaWare.SDK.MessageBroker.ServiceBus.csproj", "{217343DF-91D6-4F3C-A56D-09D512902DB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaWare.SDK.MessageBroker.Extensions.Gates", "src\DeltaWare.SDK.MessageBroker.Extensions.Gates\DeltaWare.SDK.MessageBroker.Extensions.Gates.csproj", "{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

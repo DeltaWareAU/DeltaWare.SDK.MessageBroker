@@ -9,7 +9,7 @@ namespace DeltaWare.SDK.MessageBroker.Processors
     {
         protected IMessageHandlerResult? Result { get; set; } = null;
 
-        public async Task<IMessageHandlerResult> HandleAsync(Message message)
+        public async ValueTask<IMessageHandlerResult> HandleAsync(Message message)
         {
             TMessage messageToProcess;
 
@@ -34,6 +34,6 @@ namespace DeltaWare.SDK.MessageBroker.Processors
             return Result ?? MessageHandlerResult.Success();
         }
 
-        protected abstract Task ProcessAsync(TMessage message);
+        protected abstract ValueTask ProcessAsync(TMessage message);
     }
 }

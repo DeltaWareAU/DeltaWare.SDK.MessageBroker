@@ -6,6 +6,6 @@ namespace DeltaWare.SDK.MessageBroker.Processors
 {
     public interface IMessageHandler
     {
-        Task<IMessageHandlerResult> HandleAsync(Message message);
+        ValueTask<IMessageHandlerResult> HandleAsync(Message message);
     }
 }

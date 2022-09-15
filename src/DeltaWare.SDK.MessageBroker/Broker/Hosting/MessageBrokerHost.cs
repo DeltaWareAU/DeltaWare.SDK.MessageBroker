@@ -17,7 +17,7 @@ namespace DeltaWare.SDK.MessageBroker.Broker.Hosting
             _messageBroker = messageBroker;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting Message Broker Host.");
 
@@ -28,7 +28,7 @@ namespace DeltaWare.SDK.MessageBroker.Broker.Hosting
                 _messageBroker.InitiateBindings();
             }
 
-            return _messageBroker.StartListeningAsync(cancellationToken);
+            await _messageBroker.StartListeningAsync(cancellationToken);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
