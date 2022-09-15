@@ -8,8 +8,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMessageBroker(o =>
 {
-    o.UseAzureServiceBus("");
-    o.EnableEventGates();
+    o.UseAzureServiceBus(builder.Configuration.GetConnectionString("AzureServiceBus"));
+    o.EnableMessageGates();
 });
 
 var app = builder.Build();

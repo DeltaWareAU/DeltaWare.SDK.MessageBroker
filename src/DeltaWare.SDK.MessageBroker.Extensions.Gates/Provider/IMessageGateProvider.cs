@@ -2,8 +2,8 @@
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider
 {
-    public interface IEventGateProvider
+    public interface IMessageGateProvider
     {
-        EventGate GetGate<TKey>(TKey key) where TKey : Message;
+        MessageGate InitiateGate<TKey>(TKey key) where TKey : Message;
     }
 }

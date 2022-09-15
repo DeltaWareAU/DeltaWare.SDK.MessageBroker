@@ -1,8 +1,8 @@
 ﻿using DeltaWare.SDK.MessageBroker.Messages;
 
-namespace DeltaWare.SDK.MessageBroker.Extensions.Gates
+namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler
 {
-    internal interface IEventGateHandler
+    internal interface IMessageGateHandler
     {
         void TryOpen(Message message);
     }

@@ -3,7 +3,7 @@ using DeltaWare.SDK.MessageBroker.Messages;
 
 namespace Testing.Messages
 {
-    [DirectBinding("Contract.Create")]
+    [DirectBinding("contract.create")]
     public class CreateContractMessage : Message
     {
         public string ContractId { get; set; }

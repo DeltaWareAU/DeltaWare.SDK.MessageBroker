@@ -2,7 +2,7 @@
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates
 {
-    internal abstract class EventGate<TKey> : EventGate where TKey : Message
+    internal abstract class MessageGate<TKey> : MessageGate where TKey : Message
     {
         private readonly TaskCompletionSource _isUnlocked = new();
 
@@ -10,7 +10,7 @@ namespace DeltaWare.SDK.MessageBroker.Extensions.Gates
 
         private readonly TimeSpan _timeout;
 
-        protected EventGate(TKey key, TimeSpan timeout)
+        protected MessageGate(TKey key, TimeSpan timeout)
         {
             _key = key;
             _timeout = timeout;
@@ -30,12 +30,12 @@ namespace DeltaWare.SDK.MessageBroker.Extensions.Gates
 
         public override Task WaitAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
         {
-            return WaitUntilCountOrTimeoutAsync(timeout.Milliseconds, cancellationToken);
+            return WaitUntilCountOrTimeoutAsync((int)timeout.TotalMilliseconds, cancellationToken);
         }
 
         public override Task WaitAsync(CancellationToken cancellationToken = default)
         {
-            return WaitUntilCountOrTimeoutAsync(_timeout.Milliseconds, cancellationToken);
+            return WaitUntilCountOrTimeoutAsync((int)_timeout.TotalMilliseconds, cancellationToken);
         }
 
         private async Task WaitUntilCountOrTimeoutAsync(int millisecondsTimeout, CancellationToken cancellationToken)

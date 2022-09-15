@@ -1,13 +1,13 @@
 ﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
 using DeltaWare.SDK.MessageBroker.Messages;
 
-namespace DeltaWare.SDK.MessageBroker.Extensions.Gates
+namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler
 {
-    internal class EventGateHandler<TKey> : EventGate<TKey>, IEventGateHandler where TKey : Message
+    internal class MessageGateHandler<TKey> : MessageGate<TKey>, IMessageGateHandler where TKey : Message
     {
-        private readonly IEventGateHandlerBinder _binder;
+        private readonly IMessageGateHandlerBinder _binder;
 
-        public EventGateHandler(TKey key, TimeSpan timeout, IEventGateHandlerBinder binder) : base(key, timeout)
+        public MessageGateHandler(TKey key, TimeSpan timeout, IMessageGateHandlerBinder binder) : base(key, timeout)
         {
             _binder = binder;
             _binder.Bind(this);

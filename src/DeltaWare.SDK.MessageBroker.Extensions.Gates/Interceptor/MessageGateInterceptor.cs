@@ -1,25 +1,26 @@
-﻿using DeltaWare.SDK.MessageBroker.Messages;
+﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler;
+using DeltaWare.SDK.MessageBroker.Messages;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor
 {
-    internal class EventGateMessageInterceptor : IMessageInterceptor, IEventGateHandlerBinder
+    internal class MessageGateInterceptor : IMessageInterceptor, IMessageGateHandlerBinder
     {
         private readonly object _listLock = new object();
 
-        private readonly List<IEventGateHandler> _boundHandlers = new();
+        private readonly List<IMessageGateHandler> _boundHandlers = new();
 
         public void OnMessageReceived(Message message, Type messageType)
         {
             lock (_listLock)
             {
-                foreach (IEventGateHandler boundHandler in _boundHandlers)
+                foreach (IMessageGateHandler boundHandler in _boundHandlers)
                 {
                     boundHandler.TryOpen(message);
                 }
             }
         }
 
-        public void Bind(IEventGateHandler handler)
+        public void Bind(IMessageGateHandler handler)
         {
             lock (_listLock)
             {
@@ -27,7 +28,7 @@ namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor
             }
         }
 
-        public void Unbind(IEventGateHandler handler)
+        public void Unbind(IMessageGateHandler handler)
         {
             lock (_listLock)
             {

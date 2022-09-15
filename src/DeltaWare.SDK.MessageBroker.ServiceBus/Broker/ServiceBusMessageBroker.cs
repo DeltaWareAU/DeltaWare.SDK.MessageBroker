@@ -121,7 +121,7 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
 
             foreach (ServiceBusProcessor processor in _handlerBindings.Values)
             {
-                await processor.StopProcessingAsync(cancellationToken);
+                await processor.StartProcessingAsync(cancellationToken);
             }
         }
 

@@ -8,9 +8,9 @@ namespace Testing.Messages.Handlers
     {
         private readonly ILogger _logger;
 
-        private readonly IEventGateProvider _gateProvider;
+        private readonly IMessageGateProvider _gateProvider;
 
-        public CreateContractHandler(IEventGateProvider gateProvider, ILogger<CreateContractHandler> logger)
+        public CreateContractHandler(IMessageGateProvider gateProvider, ILogger<CreateContractHandler> logger)
         {
             _gateProvider = gateProvider;
             _logger = logger;
@@ -18,16 +18,20 @@ namespace Testing.Messages.Handlers
 
         protected override async ValueTask ProcessAsync(CreateContractMessage message)
         {
-            _logger.LogInformation("Creating Contract: {ContractId} for User {FirstName} {LastName}", message.ContractId, message.FirstName, message.LastName);
-
-            using EventGate eventGate = _gateProvider.GetGate(new ContractIdSavedMessage
+            ContractIdSavedMessage contractSavedEvent = new ContractIdSavedMessage
             {
                 ContractId = message.ContractId
-            });
+            };
 
-            _logger.LogInformation("Contract: {ContractId} Awaiting Saved.", message.ContractId);
+            _logger.LogInformation("Creating Contract: {ContractId} for User {FirstName} {LastName}", message.ContractId, message.FirstName, message.LastName);
 
-            await eventGate.WaitAsync();
+            // Initiate an Event Gate.
+            using MessageGate messageGate = _gateProvider.InitiateGate(contractSavedEvent);
+
+            _logger.LogInformation("Contract: {ContractId} Awaiting Save Event.", message.ContractId);
+
+            // Await the Event Gate.
+            await messageGate.WaitAsync(TimeSpan.FromSeconds(60));
 
             _logger.LogInformation("Contract: {ContractId} has been Saved.", message.ContractId);
         }
