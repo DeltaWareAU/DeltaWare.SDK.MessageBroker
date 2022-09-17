@@ -1,6 +1,6 @@
-﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates;
+﻿using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Extensions.Gates;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider;
-using DeltaWare.SDK.MessageBroker.Processors;
 
 namespace Testing.Messages.Handlers
 {

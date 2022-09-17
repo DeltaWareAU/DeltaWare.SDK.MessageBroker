@@ -1,9 +1,9 @@
-﻿using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Processors.Results;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
 
-namespace DeltaWare.SDK.MessageBroker.Processors
+namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 {
     public abstract class MessageHandler<TMessage> : IMessageHandler where TMessage : Message
     {

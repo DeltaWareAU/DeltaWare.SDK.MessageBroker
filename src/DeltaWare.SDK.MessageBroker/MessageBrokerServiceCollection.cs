@@ -1,11 +1,12 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding;
-using DeltaWare.SDK.MessageBroker.Broker;
-using DeltaWare.SDK.MessageBroker.Broker.Hosting;
-using DeltaWare.SDK.MessageBroker.Messages.Serialization;
-using DeltaWare.SDK.MessageBroker.Processors;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
+using DeltaWare.SDK.MessageBroker.Core;
+using DeltaWare.SDK.MessageBroker.Core.Binding;
+using DeltaWare.SDK.MessageBroker.Core.Broker;
+using DeltaWare.SDK.MessageBroker.Core.Broker.Hosting;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 
 // ReSharper disable once CheckNamespace
 namespace DeltaWare.SDK.MessageBroker

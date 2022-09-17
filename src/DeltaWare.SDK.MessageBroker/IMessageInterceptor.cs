@@ -1,7 +1,7 @@
-﻿using DeltaWare.SDK.MessageBroker.Messages;
-using System;
+﻿using System;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
 
-namespace DeltaWare.SDK.MessageBroker
+namespace DeltaWare.SDK.MessageBroker.Core
 {
     public interface IMessageInterceptor
     {

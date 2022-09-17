@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DeltaWare.SDK.MessageBroker.Binding
+namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
     public interface IMessageHandlerBinding
     {

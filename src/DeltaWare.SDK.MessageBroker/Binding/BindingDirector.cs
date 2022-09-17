@@ -1,14 +1,14 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding.Attributes;
-using DeltaWare.SDK.MessageBroker.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Binding.Helpers;
-using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Processors;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Attributes;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Helpers;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
 
-namespace DeltaWare.SDK.MessageBroker.Binding
+namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
     public class BindingDirector : IBindingDirector
     {

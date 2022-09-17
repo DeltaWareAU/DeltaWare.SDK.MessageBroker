@@ -1,13 +1,13 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding;
-using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Messages.Serialization;
-using DeltaWare.SDK.MessageBroker.Processors.Results;
+﻿using System;
+using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Core.Binding;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
+using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
-namespace DeltaWare.SDK.MessageBroker.Processors
+namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 {
     internal class MessageHandlerManager : IMessageHandlerManager
     {

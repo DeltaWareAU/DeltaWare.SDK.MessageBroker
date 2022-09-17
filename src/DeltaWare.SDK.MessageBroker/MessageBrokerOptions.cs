@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace DeltaWare.SDK.MessageBroker
+namespace DeltaWare.SDK.MessageBroker.Core
 {
     public class MessageBrokerOptions : IMessageBrokerOptions
     {

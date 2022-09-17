@@ -1,6 +1,6 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding.Attributes;
-using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Processors;
+﻿using DeltaWare.SDK.MessageBroker.Core.Binding.Attributes;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
 
 namespace Testing.Messages
 {

@@ -1,11 +1,12 @@
-﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
+﻿using DeltaWare.SDK.MessageBroker.Core;
+using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider;
 using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable once CheckNamespace
 namespace DeltaWare.SDK.MessageBroker
 {
-    public static class MessageGateMessageBrokerOptions
+    public static class MessageGateOptions
     {
         public static void EnableMessageGates(this IMessageBrokerOptions options)
         {

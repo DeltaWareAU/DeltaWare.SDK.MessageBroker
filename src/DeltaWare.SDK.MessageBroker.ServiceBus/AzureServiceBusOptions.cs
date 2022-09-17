@@ -1,14 +1,15 @@
 ﻿using DeltaWare.SDK.Core.Validators;
-using DeltaWare.SDK.MessageBroker.Broker;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Broker;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using DeltaWare.SDK.MessageBroker.Core;
+using DeltaWare.SDK.MessageBroker.Core.Broker;
 
 // ReSharper disable once CheckNamespace
 namespace DeltaWare.SDK.MessageBroker
 {
-    public static class AzureServiceBusMessageBrokerOptions
+    public static class AzureServiceBusOptions
     {
         public static void UseAzureServiceBus(this IMessageBrokerOptions options, string connectionString)
         {

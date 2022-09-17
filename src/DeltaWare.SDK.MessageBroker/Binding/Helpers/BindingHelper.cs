@@ -1,11 +1,11 @@
-﻿using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Processors;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
 
-namespace DeltaWare.SDK.MessageBroker.Binding.Helpers
+namespace DeltaWare.SDK.MessageBroker.Core.Binding.Helpers
 {
     internal static class BindingHelper
     {
