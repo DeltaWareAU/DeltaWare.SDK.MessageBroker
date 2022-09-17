@@ -1,10 +1,4 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding;
-using DeltaWare.SDK.MessageBroker.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Broker;
-using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Messages.Serialization;
-using DeltaWare.SDK.MessageBroker.Processors;
-using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;
+﻿using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System;
@@ -13,10 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Core.Binding;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
+using DeltaWare.SDK.MessageBroker.Core.Broker;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
+using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 
 namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 {
-    internal class RabbitMqMessageBroker : IMessageBroker, IDisposable
+    internal class RabbitMqMessageBroker : IMessageBroker, IAsyncDisposable
     {
         private readonly IRabbitMqMessageBrokerOptions _options;
 
@@ -50,33 +50,20 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
             _connection.ConnectionShutdown += OnShutdown;
         }
 
-        public Task PublishAsync<TMessage>(TMessage message) where TMessage : Message
+        public Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default) where TMessage : Message
         {
-            var binding = _bindingDirector.GetMessageBinding<TMessage>();
-
-            string serializedMessage = _messageSerializer.Serialize(message);
-
-            var properties = _channel.CreateBasicProperties();
-
-            byte[] messageBuffer = Encoding.UTF8.GetBytes(serializedMessage);
-
-            _channel.BasicPublish(binding.Name, binding.RoutingPattern ?? string.Empty, properties, messageBuffer);
-
-            return Task.CompletedTask;
-        }
-
-        private IConnection OpenConnection(IRabbitMqMessageBrokerOptions options)
-        {
-            ConnectionFactory factory = new ConnectionFactory
+            return Task.Run(() =>
             {
-                UserName = options.UserName,
-                Password = options.Password,
-                VirtualHost = options.VirtualHost,
-                HostName = options.HostName,
-                Port = options.Port
-            };
+                IBindingDetails binding = _bindingDirector.GetMessageBinding<TMessage>();
 
-            return factory.CreateConnection();
+                string serializedMessage = _messageSerializer.Serialize(message);
+
+                IBasicProperties properties = _channel.CreateBasicProperties();
+
+                byte[] messageBuffer = Encoding.UTF8.GetBytes(serializedMessage);
+
+                _channel.BasicPublish(binding.Name, binding.RoutingPattern ?? string.Empty, properties, messageBuffer);
+            }, cancellationToken);
         }
 
         public void InitiateBindings()
@@ -154,6 +141,20 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
             return Task.CompletedTask;
         }
 
+        private IConnection OpenConnection(IRabbitMqMessageBrokerOptions options)
+        {
+            ConnectionFactory factory = new ConnectionFactory
+            {
+                UserName = options.UserName,
+                Password = options.Password,
+                VirtualHost = options.VirtualHost,
+                HostName = options.HostName,
+                Port = options.Port
+            };
+
+            return factory.CreateConnection();
+        }
+
         private async void OnShutdown(object sender, ShutdownEventArgs args)
         {
             _logger.LogWarning("Rabbit MQ Host offline, Message Received: {message}", args.ReplyText);
@@ -161,15 +162,36 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
             await StopListeningAsync();
         }
 
-        public void Dispose()
+        #region IAsyncDisposable
+
+        private bool _disposed;
+
+        public ValueTask DisposeAsync()
         {
-            if (IsListening)
+            return DisposeAsync(true);
+        }
+
+        private async ValueTask DisposeAsync(bool disposing)
+        {
+            if (_disposed)
             {
-                StopListeningAsync().GetAwaiter().GetResult();
+                return;
             }
 
-            _connection?.Close();
-            _connection?.Dispose();
+            if (disposing)
+            {
+                if (IsListening)
+                {
+                    await StopListeningAsync();
+                }
+
+                _connection?.Close();
+                _connection?.Dispose();
+            }
+
+            _disposed = true;
         }
+
+        #endregion
     }
 }

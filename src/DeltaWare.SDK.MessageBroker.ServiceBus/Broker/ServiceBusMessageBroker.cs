@@ -1,11 +1,4 @@
 ﻿using Azure.Messaging.ServiceBus;
-using DeltaWare.SDK.MessageBroker.Binding;
-using DeltaWare.SDK.MessageBroker.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Broker;
-using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Messages.Serialization;
-using DeltaWare.SDK.MessageBroker.Processors;
-using DeltaWare.SDK.MessageBroker.Processors.Results;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Options;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,6 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Core.Binding;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
+using DeltaWare.SDK.MessageBroker.Core.Broker;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
+using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 
 namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
 {
@@ -45,7 +45,7 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
             _bindingDirector = bindingDirector;
         }
 
-        public async Task PublishAsync<TMessage>(TMessage message) where TMessage : Message
+        public Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default) where TMessage : Message
         {
             IBindingDetails bindingDetails = _bindingDirector.GetMessageBinding<TMessage>();
 
@@ -58,21 +58,9 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
 
             ServiceBusMessage serviceBusMessage = CreateServiceBusMessage(message);
 
-            await sender.SendMessageAsync(serviceBusMessage);
+            return sender.SendMessageAsync(serviceBusMessage, cancellationToken);
         }
-
-        private ServiceBusMessage CreateServiceBusMessage<TMessage>(TMessage message) where TMessage : Message
-        {
-            string messageBody = _messageSerializer.Serialize(message);
-
-            ServiceBusMessage serviceBusMessage = new ServiceBusMessage(messageBody)
-            {
-                CorrelationId = message.Id.ToString()
-            };
-
-            return serviceBusMessage;
-        }
-
+        
         public void InitiateBindings()
         {
             if (Initiated)
@@ -121,7 +109,7 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
 
             foreach (ServiceBusProcessor processor in _handlerBindings.Values)
             {
-                await processor.StopProcessingAsync(cancellationToken);
+                await processor.StartProcessingAsync(cancellationToken);
             }
         }
 
@@ -138,6 +126,18 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
             {
                 await processor.StopProcessingAsync(cancellationToken);
             }
+        }
+
+        private ServiceBusMessage CreateServiceBusMessage<TMessage>(TMessage message) where TMessage : Message
+        {
+            string messageBody = _messageSerializer.Serialize(message);
+
+            ServiceBusMessage serviceBusMessage = new ServiceBusMessage(messageBody)
+            {
+                CorrelationId = message.Id.ToString()
+            };
+
+            return serviceBusMessage;
         }
 
         private async Task OnMessageAsync(ProcessMessageEventArgs args, IMessageHandlerBinding binding)

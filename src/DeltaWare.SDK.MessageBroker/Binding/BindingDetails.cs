@@ -1,6 +1,6 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding.Enums;
+﻿using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
 
-namespace DeltaWare.SDK.MessageBroker.Binding
+namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
     public class BindingDetails : IBindingDetails
     {

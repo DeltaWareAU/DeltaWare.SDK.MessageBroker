@@ -1,9 +1,9 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding;
-using DeltaWare.SDK.MessageBroker.Processors;
-using DeltaWare.SDK.MessageBroker.Processors.Results;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using System;
 using System.Text;
+using DeltaWare.SDK.MessageBroker.Core.Binding;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 
 namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 {

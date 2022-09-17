@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeltaWare.SDK.MessageBroker.Processors.Results
+namespace DeltaWare.SDK.MessageBroker.Core.Handlers.Results
 {
     public class MessageHandlerResult : IMessageHandlerResult
     {

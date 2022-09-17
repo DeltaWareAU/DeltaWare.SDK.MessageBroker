@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>d4ca6e8a-168e-4c4d-9ae7-60528a0f147e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\DeltaWare.SDK.MessageBroker.Extensions.Gates\DeltaWare.SDK.MessageBroker.Extensions.Gates.csproj" />
+    <ProjectReference Include="..\src\DeltaWare.SDK.MessageBroker.ServiceBus\DeltaWare.SDK.MessageBroker.ServiceBus.csproj" />
+  </ItemGroup>
+
+</Project>

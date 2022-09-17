@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace DeltaWare.SDK.MessageBroker.Messages
+namespace DeltaWare.SDK.MessageBroker.Core.Messages
 {
     public abstract class Message
     {

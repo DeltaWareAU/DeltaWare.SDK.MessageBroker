@@ -1,7 +1,7 @@
-﻿using DeltaWare.SDK.MessageBroker.Messages;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
 
-namespace DeltaWare.SDK.MessageBroker.Binding
+namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
     public interface IBindingDirector
     {

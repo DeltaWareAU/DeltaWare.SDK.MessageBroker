@@ -1,4 +1,4 @@
-﻿namespace DeltaWare.SDK.MessageBroker.Binding.Enums
+﻿namespace DeltaWare.SDK.MessageBroker.Core.Binding.Enums
 {
     public enum BrokerExchangeType
     {

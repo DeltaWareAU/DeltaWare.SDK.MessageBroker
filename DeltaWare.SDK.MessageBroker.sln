@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker", "src\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.csproj", "{78AD9EF9-5758-4F00-BAED-4F7A1418613E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker.Core", "src\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.Core.csproj", "{78AD9EF9-5758-4F00-BAED-4F7A1418613E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker.RabbitMQ", "src\DeltaWare.SDK.MessageBroker.RabbitMQ\DeltaWare.SDK.MessageBroker.RabbitMQ.csproj", "{C6C593BB-FC50-4BBA-BBE7-2CC5CCD8F977}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker.ServiceBus", "src\DeltaWare.SDK.MessageBroker.ServiceBus\DeltaWare.SDK.MessageBroker.ServiceBus.csproj", "{217343DF-91D6-4F3C-A56D-09D512902DB1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeltaWare.SDK.MessageBroker.Extensions.Gates", "src\DeltaWare.SDK.MessageBroker.Extensions.Gates\DeltaWare.SDK.MessageBroker.Extensions.Gates.csproj", "{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{24599768-E5AC-42CA-B7DF-9951EC74C2DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C0A58F94-78DD-4272-8DE1-59A797CA3E81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +33,14 @@ Global
 		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{217343DF-91D6-4F3C-A56D-09D512902DB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2874FFC-8615-4DE4-A8BA-85DEF3B4F057}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24599768-E5AC-42CA-B7DF-9951EC74C2DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24599768-E5AC-42CA-B7DF-9951EC74C2DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24599768-E5AC-42CA-B7DF-9951EC74C2DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24599768-E5AC-42CA-B7DF-9951EC74C2DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,13 +1,14 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding.Attributes;
-using DeltaWare.SDK.MessageBroker.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Processors;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Attributes;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Helpers;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
 
-namespace DeltaWare.SDK.MessageBroker.Binding
+namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
     public class BindingDirector : IBindingDirector
     {
@@ -17,7 +18,7 @@ namespace DeltaWare.SDK.MessageBroker.Binding
 
         public BindingDirector()
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             DiscoverMessagesFromAssemblies(assemblies);
             DiscoverProcessorsFromAssemblies(assemblies);
@@ -30,70 +31,72 @@ namespace DeltaWare.SDK.MessageBroker.Binding
 
         private void DiscoverProcessorsFromAssemblies(params Assembly[] assemblies)
         {
-            foreach (Type processorType in GetProcessorTypesFromAssemblies(assemblies))
-            {
-                Type? messageType = processorType.GetGenericArguments(typeof(MessageHandler<>)).FirstOrDefault();
-
-                if (messageType == null)
-                {
-                    throw new Exception();
-                }
-
-                if (!messageType.IsSubclassOf<Message>())
-                {
-                    throw new Exception();
-                }
-
-                IBindingDetails binding = _messageToBindingMap[messageType];
-
-                if (processorType.TryGetCustomAttribute(out RoutingPatternAttribute routingPattern))
-                {
-                    binding = new BindingDetails
-                    {
-                        ExchangeType = BrokerExchangeType.Topic,
-                        Name = binding.Name,
-                        RoutingPattern = routingPattern.Pattern
-                    };
-                }
-
-                if (!_messageProcessors.TryGetValue(binding, out MessageHandlerBinding processorBinding))
-                {
-                    processorBinding = new MessageHandlerBinding(binding, messageType);
-
-                    _messageProcessors.Add(binding, processorBinding);
-                }
-
-                processorBinding.AddProcessor(processorType);
-            }
+            BindingHelper
+                .GetProcessorTypesFromAssemblies(assemblies)
+                .ForEach(BindProcessor);
         }
+
+
 
         private void DiscoverMessagesFromAssemblies(params Assembly[] assemblies)
         {
-            foreach (Type messageType in GetMessageTypesFromAssemblies(assemblies))
+            BindingHelper
+                .GetMessageTypesFromAssemblies(assemblies)
+                .ForEach(BindMessage);
+        }
+
+        #region Binding
+
+        private void BindProcessor(Type type)
+        {
+            Type? messageType = type.GetGenericArguments(typeof(MessageHandler<>)).FirstOrDefault();
+
+            if (messageType == null)
             {
-                var bindingAttribute = messageType.GetCustomAttribute<MessageBrokerBindingAttribute>();
-
-                if (bindingAttribute == null)
-                {
-                    throw new Exception($"A message ({messageType.Name}) does not have a Binding Attribute Applied.");
-                }
-
-                IBindingDetails bindingDetails = bindingAttribute.GetBindingDetails();
-
-                _messageToBindingMap.Add(messageType, bindingDetails);
+                throw new Exception();
             }
+
+            if (!messageType.IsSubclassOf<Message>())
+            {
+                throw new Exception();
+            }
+
+            IBindingDetails binding = _messageToBindingMap[messageType];
+
+            if (type.TryGetCustomAttribute(out RoutingPatternAttribute routingPattern))
+            {
+                binding = new BindingDetails
+                {
+                    ExchangeType = BrokerExchangeType.Topic,
+                    Name = binding.Name,
+                    RoutingPattern = routingPattern.Pattern
+                };
+            }
+
+            if (!_messageProcessors.TryGetValue(binding, out MessageHandlerBinding processorBinding))
+            {
+                processorBinding = new MessageHandlerBinding(binding, messageType);
+
+                _messageProcessors.Add(binding, processorBinding);
+            }
+
+            processorBinding.AddProcessor(type);
         }
 
-        private IEnumerable<Type> GetProcessorTypesFromAssemblies(params Assembly[] assemblies)
+        private void BindMessage(Type type)
         {
-            return assemblies.SelectMany(a => a.GetLoadedTypes().Where(t => t.IsSubclassOfRawGeneric(typeof(MessageHandler<>))));
+            var bindingAttribute = type.GetCustomAttribute<MessageBrokerBindingAttribute>();
 
+            if (bindingAttribute == null)
+            {
+                throw new Exception($"A message ({type.Name}) does not have a Binding Attribute Applied.");
+            }
+
+            IBindingDetails bindingDetails = bindingAttribute.GetBindingDetails();
+
+            _messageToBindingMap.Add(type, bindingDetails);
         }
 
-        private IEnumerable<Type> GetMessageTypesFromAssemblies(params Assembly[] assemblies)
-        {
-            return assemblies.SelectMany(a => a.GetLoadedTypes().Where(t => t.IsSubclassOf<Message>()));
-
-        }
+        #endregion
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DeltaWare.SDK.MessageBroker.Processors.Results
+namespace DeltaWare.SDK.MessageBroker.Core.Handlers.Results
 {
     public interface IMessageHandlerResults
     {

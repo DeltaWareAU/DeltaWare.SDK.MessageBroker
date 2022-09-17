@@ -1,13 +1,13 @@
-﻿using DeltaWare.SDK.MessageBroker.Binding;
-using DeltaWare.SDK.MessageBroker.Messages;
-using DeltaWare.SDK.MessageBroker.Messages.Serialization;
-using DeltaWare.SDK.MessageBroker.Processors.Results;
+﻿using System;
+using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Core.Binding;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
+using DeltaWare.SDK.MessageBroker.Core.Messages;
+using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
-namespace DeltaWare.SDK.MessageBroker.Processors
+namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 {
     internal class MessageHandlerManager : IMessageHandlerManager
     {
@@ -17,10 +17,13 @@ namespace DeltaWare.SDK.MessageBroker.Processors
 
         private readonly IMessageSerializer _messageSerializer;
 
-        public MessageHandlerManager(IServiceScopeFactory serviceScopeFactory, IMessageSerializer messageSerializer, ILogger<MessageHandlerManager>? logger = null)
+        private readonly IMessageInterceptor? _messageInterceptor;
+
+        public MessageHandlerManager(IServiceScopeFactory serviceScopeFactory, IMessageSerializer messageSerializer, IMessageInterceptor? messageInterceptor = null, ILogger<MessageHandlerManager>? logger = null)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _messageSerializer = messageSerializer;
+            _messageInterceptor = messageInterceptor;
 
             _logger = logger;
         }
@@ -39,6 +42,8 @@ namespace DeltaWare.SDK.MessageBroker.Processors
 
                 return MessageHandlerResults.Failure(e, "An exception was encountered whilst deserializing the message");
             }
+
+            _messageInterceptor?.OnMessageReceived(message, handlerBinding.MessageType);
 
             IMessageHandlerResult[] results = new IMessageHandlerResult[handlerBinding.HandlerTypes.Count];
 

@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace DeltaWare.SDK.MessageBroker.Broker.Hosting
+namespace DeltaWare.SDK.MessageBroker.Core.Broker.Hosting
 {
     internal class MessageBrokerHost : IHostedService
     {
@@ -17,7 +17,7 @@ namespace DeltaWare.SDK.MessageBroker.Broker.Hosting
             _messageBroker = messageBroker;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting Message Broker Host.");
 
@@ -28,7 +28,9 @@ namespace DeltaWare.SDK.MessageBroker.Broker.Hosting
                 _messageBroker.InitiateBindings();
             }
 
-            return _messageBroker.StartListeningAsync(cancellationToken);
+            await _messageBroker.StartListeningAsync(cancellationToken);
+
+            _logger.LogInformation("Message Broker Host has Started.");
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -37,17 +39,14 @@ namespace DeltaWare.SDK.MessageBroker.Broker.Hosting
 
             await _messageBroker.StopListeningAsync(cancellationToken);
 
-            while (_messageBroker.IsProcessing)
+            while (_messageBroker.IsProcessing && !cancellationToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Shutdown postponed until messages have finished being processed.");
 
                 await Task.Delay(1000, cancellationToken);
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
             }
+
+            _logger.LogInformation("Message Broker Host Stopped.");
         }
     }
 }
