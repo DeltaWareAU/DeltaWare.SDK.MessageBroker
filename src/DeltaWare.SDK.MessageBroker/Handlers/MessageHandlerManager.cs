@@ -17,9 +17,9 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 
         private readonly IMessageSerializer _messageSerializer;
 
-        private readonly IMessageInterceptor? _messageInterceptor;
+        private readonly MessageInterceptor? _messageInterceptor;
 
-        public MessageHandlerManager(IServiceScopeFactory serviceScopeFactory, IMessageSerializer messageSerializer, IMessageInterceptor? messageInterceptor = null, ILogger<MessageHandlerManager>? logger = null)
+        public MessageHandlerManager(IServiceScopeFactory serviceScopeFactory, IMessageSerializer messageSerializer, MessageInterceptor? messageInterceptor = null, ILogger<MessageHandlerManager>? logger = null)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _messageSerializer = messageSerializer;

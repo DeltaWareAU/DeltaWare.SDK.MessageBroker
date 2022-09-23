@@ -4,13 +4,13 @@ using DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor
 {
-    internal class MessageGateInterceptor : IMessageInterceptor, IMessageGateHandlerBinder
+    internal class MessageGateInterceptor : MessageInterceptor, IMessageGateHandlerBinder
     {
         private readonly object _listLock = new object();
 
         private readonly List<IMessageGateHandler> _boundHandlers = new();
 
-        public void OnMessageReceived(Message message, Type messageType)
+        public override void OnMessageReceived(Message message, Type messageType)
         {
             lock (_listLock)
             {

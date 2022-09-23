@@ -17,7 +17,7 @@ namespace DeltaWare.SDK.MessageBroker
 
             brokerOptions.Services
                 .AddSingleton<MessageGateInterceptor>()
-                .AddSingleton<IMessageInterceptor>(p => p.GetRequiredService<MessageGateInterceptor>())
+                .AddSingleton<MessageInterceptor>(p => p.GetRequiredService<MessageGateInterceptor>())
                 .AddSingleton<IMessageGateHandlerBinder>(p => p.GetRequiredService<MessageGateInterceptor>())
                 .AddSingleton<IMessageGateProvider, MessageGateProvider>();
         }

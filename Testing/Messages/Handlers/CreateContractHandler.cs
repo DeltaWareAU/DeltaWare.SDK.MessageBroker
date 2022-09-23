@@ -30,10 +30,17 @@ namespace Testing.Messages.Handlers
 
             _logger.LogInformation("Contract: {ContractId} Awaiting Save Event.", message.ContractId);
 
-            // Await the Event Gate.
-            await messageGate.WaitAsync(TimeSpan.FromSeconds(60));
+            await Task.Delay(20);
 
-            _logger.LogInformation("Contract: {ContractId} has been Saved.", message.ContractId);
+
+            if (messageGate.IsOpen)
+            {
+                _logger.LogInformation("Contract: {ContractId} has been Saved.", message.ContractId);
+            }
+            else
+            {
+                _logger.LogWarning("Contract: {ContractId} has been Cancelled.", message.ContractId);
+            }
         }
     }
 }
