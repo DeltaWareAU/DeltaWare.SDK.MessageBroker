@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DeltaWare.SDK.MessageBroker.Core.Binding;
 using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 using DeltaWare.SDK.MessageBroker.Core.Messages;
+using DeltaWare.SDK.MessageBroker.Core.Messages.Interception;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -44,6 +45,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
             }
 
             _messageInterceptor?.OnMessageReceived(message, handlerBinding.MessageType);
+            _messageInterceptor?.OnMessageReceivedAsync(message, handlerBinding.MessageType);
 
             IMessageHandlerResult[] results = new IMessageHandlerResult[handlerBinding.HandlerTypes.Count];
 
@@ -66,7 +68,18 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
                     continue;
                 }
 
-                results[i] = await messageHandler.HandleAsync(message);
+                _messageInterceptor?.OnMessageExecuting(message, handlerBinding.MessageType);
+
+                IMessageHandlerResult result = await messageHandler.HandleAsync(message);
+
+                if (result.HasException)
+                {
+                    _messageInterceptor?.OnException(message, handlerBinding.MessageType, result.Exception!);
+                }
+
+                _messageInterceptor?.OnMessageExecuted(message, handlerBinding.MessageType);
+
+                results[i] = result;
             }
 
             return new MessageHandlerResults(results);

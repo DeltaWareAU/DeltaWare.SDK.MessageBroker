@@ -1,4 +1,5 @@
-﻿using DeltaWare.SDK.MessageBroker.Core;
+﻿using DeltaWare.SDK.MessageBroker.Core.Messages.Interception;
+using DeltaWare.SDK.MessageBroker.Core.Options;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider;
 using Microsoft.Extensions.DependencyInjection;
