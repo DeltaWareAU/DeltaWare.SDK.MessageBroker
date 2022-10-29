@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Core.Messages;
+﻿using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
+using System.Threading.Tasks;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 {
     public interface IMessageHandler
     {
-        ValueTask<IMessageHandlerResult> HandleAsync(Message message);
+        ValueTask<IMessageHandlerResult> HandleAsync(object message);
     }
 }

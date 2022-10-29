@@ -1,9 +1,8 @@
-﻿using System;
+﻿using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DeltaWare.SDK.MessageBroker.Core.Handlers;
-using DeltaWare.SDK.MessageBroker.Core.Messages;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Binding.Helpers
 {

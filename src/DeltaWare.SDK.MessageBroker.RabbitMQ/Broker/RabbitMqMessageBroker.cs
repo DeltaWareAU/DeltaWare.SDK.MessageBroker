@@ -1,4 +1,10 @@
-﻿using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;
+﻿using DeltaWare.SDK.MessageBroker.Core.Binding;
+using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
+using DeltaWare.SDK.MessageBroker.Core.Broker;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
+using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
+using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System;
@@ -7,12 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using DeltaWare.SDK.MessageBroker.Core.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Core.Broker;
-using DeltaWare.SDK.MessageBroker.Core.Handlers;
-using DeltaWare.SDK.MessageBroker.Core.Messages;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 
 namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 {
@@ -28,6 +28,8 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 
         private readonly IMessageSerializer _messageSerializer;
 
+        private readonly IPropertiesBuilder _propertiesBuilder;
+
         private readonly ILogger _logger;
 
         private IModel _channel;
@@ -38,19 +40,20 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
         public bool IsListening { get; private set; }
         public bool IsProcessing => _handlerBindings.Values.Any(h => h.IsRunning);
 
-        public RabbitMqMessageBroker(ILogger<RabbitMqMessageBroker> logger, IRabbitMqMessageBrokerOptions options, IBindingDirector bindingDirector, IMessageHandlerManager messageHandlerManager, IMessageSerializer messageSerializer)
+        public RabbitMqMessageBroker(ILogger<RabbitMqMessageBroker> logger, IRabbitMqMessageBrokerOptions options, IBindingDirector bindingDirector, IMessageHandlerManager messageHandlerManager, IMessageSerializer messageSerializer, IPropertiesBuilder propertiesBuilder)
         {
             _logger = logger;
             _options = options;
             _bindingDirector = bindingDirector;
             _messageHandlerManager = messageHandlerManager;
             _messageSerializer = messageSerializer;
+            _propertiesBuilder = propertiesBuilder;
             _connection = OpenConnection(options);
 
             _connection.ConnectionShutdown += OnShutdown;
         }
 
-        public Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default) where TMessage : Message
+        public Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default) where TMessage : class
         {
             return Task.Run(() =>
             {
@@ -59,6 +62,11 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
                 string serializedMessage = _messageSerializer.Serialize(message);
 
                 IBasicProperties properties = _channel.CreateBasicProperties();
+
+                foreach (KeyValuePair<string, object> property in _propertiesBuilder.BuildProperties(message))
+                {
+                    properties.Headers.Add(property);
+                }
 
                 byte[] messageBuffer = Encoding.UTF8.GetBytes(serializedMessage);
 

@@ -1,7 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using DeltaWare.SDK.MessageBroker.Core.Broker.Hosting;
+﻿using DeltaWare.SDK.MessageBroker.Core.Broker.Hosting;
 using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Publisher;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Broker
 {

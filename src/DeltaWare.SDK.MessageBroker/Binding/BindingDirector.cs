@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Attributes;
+﻿using DeltaWare.SDK.MessageBroker.Core.Binding.Attributes;
 using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
 using DeltaWare.SDK.MessageBroker.Core.Binding.Helpers;
 using DeltaWare.SDK.MessageBroker.Core.Handlers;
-using DeltaWare.SDK.MessageBroker.Core.Messages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
@@ -27,7 +26,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
         public IEnumerable<IMessageHandlerBinding> GetHandlerBindings() => _messageProcessors.Select(map => map.Value);
         public IEnumerable<IBindingDetails> GetMessageBindings() => _messageToBindingMap.Select(map => map.Value);
 
-        public IBindingDetails GetMessageBinding<T>() where T : Message => _messageToBindingMap[typeof(T)];
+        public IBindingDetails GetMessageBinding<T>() where T : class => _messageToBindingMap[typeof(T)];
 
         private void DiscoverProcessorsFromAssemblies(params Assembly[] assemblies)
         {
@@ -56,7 +55,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
                 throw new Exception();
             }
 
-            if (!messageType.IsSubclassOf<Message>())
+            if (!messageType.IsClass)
             {
                 throw new Exception();
             }

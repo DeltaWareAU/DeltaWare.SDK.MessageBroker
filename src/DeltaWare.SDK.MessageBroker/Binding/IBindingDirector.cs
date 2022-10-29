@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DeltaWare.SDK.MessageBroker.Core.Messages;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
@@ -9,6 +8,6 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
 
         IEnumerable<IBindingDetails> GetMessageBindings();
 
-        IBindingDetails GetMessageBinding<T>() where T : Message;
+        IBindingDetails GetMessageBinding<T>() where T : class;
     }
 }

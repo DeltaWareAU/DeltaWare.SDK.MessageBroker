@@ -1,9 +1,9 @@
-﻿using DeltaWare.SDK.MessageBroker.RabbitMQ.Broker;
+﻿using DeltaWare.SDK.MessageBroker.Core.Broker;
+using DeltaWare.SDK.MessageBroker.Core.Options;
+using DeltaWare.SDK.MessageBroker.RabbitMQ.Broker;
 using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using DeltaWare.SDK.MessageBroker.Core.Broker;
-using DeltaWare.SDK.MessageBroker.Core.Options;
 
 // ReSharper disable once CheckNamespace
 namespace DeltaWare.SDK.MessageBroker

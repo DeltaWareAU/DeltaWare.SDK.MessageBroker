@@ -1,15 +1,14 @@
-﻿using System;
+﻿using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
+using System;
 using System.Threading.Tasks;
-using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Core.Messages;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 {
-    public abstract class MessageHandler<TMessage> : IMessageHandler where TMessage : Message
+    public abstract class MessageHandler<TMessage> : IMessageHandler where TMessage : class
     {
         protected IMessageHandlerResult? Result { get; set; } = null;
 
-        public async ValueTask<IMessageHandlerResult> HandleAsync(Message message)
+        public async ValueTask<IMessageHandlerResult> HandleAsync(object message)
         {
             TMessage messageToProcess;
 

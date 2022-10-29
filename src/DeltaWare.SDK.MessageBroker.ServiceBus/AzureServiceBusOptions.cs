@@ -1,10 +1,10 @@
 ﻿using DeltaWare.SDK.Core.Validators;
+using DeltaWare.SDK.MessageBroker.Core.Broker;
+using DeltaWare.SDK.MessageBroker.Core.Options;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Broker;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using DeltaWare.SDK.MessageBroker.Core.Broker;
-using DeltaWare.SDK.MessageBroker.Core.Options;
 
 // ReSharper disable once CheckNamespace
 namespace DeltaWare.SDK.MessageBroker
