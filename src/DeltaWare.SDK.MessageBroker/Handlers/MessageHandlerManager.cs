@@ -30,11 +30,16 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 
         public async Task<IMessageHandlerResults> HandleMessageAsync(IMessageHandlerBinding handlerBinding, string messageData)
         {
-            Message message;
+            object? message;
 
             try
             {
                 message = _messageSerializer.Deserialize(messageData, handlerBinding.MessageType);
+
+                if (message == null)
+                {
+                    return MessageHandlerResults.Failure("An exception was encountered whilst deserializing the message");
+                }
             }
             catch (Exception e)
             {

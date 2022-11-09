@@ -32,5 +32,10 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers.Results
         {
             return new MessageHandlerResults(MessageHandlerResult.Failure(exception, message));
         }
+
+        public static IMessageHandlerResults Failure(string message)
+        {
+            return new MessageHandlerResults(MessageHandlerResult.Failure(message));
+        }
     }
 }

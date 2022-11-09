@@ -72,7 +72,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
                 };
             }
 
-            if (!_messageProcessors.TryGetValue(binding, out MessageHandlerBinding processorBinding))
+            if (!_messageProcessors.TryGetValue(binding, out MessageHandlerBinding? processorBinding))
             {
                 processorBinding = new MessageHandlerBinding(binding, messageType);
 
