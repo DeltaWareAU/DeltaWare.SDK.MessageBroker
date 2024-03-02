@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Consumer\**" />
+    <EmbeddedResource Remove="Consumer\**" />
+    <None Remove="Consumer\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.Core.csproj" />
+  </ItemGroup>
+
+</Project>

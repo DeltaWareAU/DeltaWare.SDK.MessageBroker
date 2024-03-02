@@ -1,16 +1,17 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Messages;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Interception;
+﻿using DeltaWare.SDK.MessageBroker.Core.Messages.Interception;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler;
+using System;
+using System.Collections.Generic;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor
 {
     internal class MessageGateInterceptor : MessageInterceptor, IMessageGateHandlerBinder
     {
-        private readonly object _listLock = new object();
+        private readonly object _listLock = new();
 
         private readonly List<IMessageGateHandler> _boundHandlers = new();
 
-        public override void OnMessageReceived(Message message, Type messageType)
+        public override void OnMessageReceived(object message, Type messageType)
         {
             lock (_listLock)
             {

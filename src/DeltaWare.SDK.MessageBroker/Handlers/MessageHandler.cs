@@ -1,6 +1,8 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
+using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
 using System;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 {
@@ -18,7 +20,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
             }
             catch (Exception ex)
             {
-                return MessageHandlerResult.Failure(ex, $"Failed to cast incoming message for ({GetType().Name}).");
+                return MessageHandlerResult.Failure(ex, $"Failed to cast incoming message to ({GetType().Name}).");
             }
 
             try

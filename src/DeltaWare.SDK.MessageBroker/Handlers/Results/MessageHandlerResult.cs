@@ -1,4 +1,5 @@
 ﻿using System;
+using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Handlers.Results
 {

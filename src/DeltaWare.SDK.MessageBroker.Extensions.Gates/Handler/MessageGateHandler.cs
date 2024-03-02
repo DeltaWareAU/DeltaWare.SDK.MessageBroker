@@ -1,9 +1,9 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Messages;
-using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
+﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
+using System;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler
 {
-    internal class MessageGateHandler<TKey> : MessageGate<TKey>, IMessageGateHandler where TKey : Message
+    internal class MessageGateHandler<TKey> : MessageGate<TKey>, IMessageGateHandler where TKey : class
     {
         private readonly IMessageGateHandlerBinder _binder;
 
@@ -13,7 +13,7 @@ namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler
             _binder.Bind(this);
         }
 
-        public void TryOpen(Message message)
+        public void TryOpen(object message)
         {
             if (_disposed)
             {

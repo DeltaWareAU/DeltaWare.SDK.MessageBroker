@@ -1,17 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <Title>$(AssemblyName)</Title>
+    <Version>8.0.0.1-alpha</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Author>Bradley Clarke</Author>
+	  <Company>DeltaWare</Company>
+	  <Product>DeltaWare.SDK.MessageBroker</Product>
+	  <PackageProjectUrl>https://github.com/DeltaWareAU/DeltaWare.SDK.MessageBroker</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/DeltaWareAU/DeltaWare.SDK.MessageBroker</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <PackageTags></PackageTags>
+	  <NeutralLanguage>en</NeutralLanguage>
+	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	  <IncludeSymbols>true</IncludeSymbols>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	  <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.8.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.Core.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\LICENSE.md" pack="true" PackagePath="." />
+	</ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@ using DeltaWare.SDK.MessageBroker.Core.Options;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 // ReSharper disable once CheckNamespace
 namespace DeltaWare.SDK.MessageBroker

@@ -1,6 +1,6 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Messages;
-using DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler;
+﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
+using System;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider
 {
@@ -15,7 +15,7 @@ namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider
             _messageGateHandlerBinder = messageGateHandlerBinder;
         }
 
-        public MessageGate InitiateGate<TKey>(TKey key) where TKey : Message
+        public MessageGate InitiateGate<TKey>(TKey key) where TKey : class
         {
             return new MessageGateHandler<TKey>(key, _defaultTimeout, _messageGateHandlerBinder);
         }

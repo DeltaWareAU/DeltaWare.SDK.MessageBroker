@@ -1,11 +1,12 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Binding.Attributes;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
+using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Attributes;
+using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
 using DeltaWare.SDK.MessageBroker.Core.Binding.Helpers;
-using DeltaWare.SDK.MessageBroker.Core.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
@@ -24,25 +25,22 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
         }
 
         public IEnumerable<IMessageHandlerBinding> GetHandlerBindings() => _messageProcessors.Select(map => map.Value);
+
         public IEnumerable<IBindingDetails> GetMessageBindings() => _messageToBindingMap.Select(map => map.Value);
 
         public IBindingDetails GetMessageBinding<T>() where T : class => _messageToBindingMap[typeof(T)];
 
         private void DiscoverProcessorsFromAssemblies(params Assembly[] assemblies)
-        {
-            BindingHelper
+            => BindingHelper
                 .GetProcessorTypesFromAssemblies(assemblies)
                 .ForEach(BindProcessor);
-        }
 
 
 
         private void DiscoverMessagesFromAssemblies(params Assembly[] assemblies)
-        {
-            BindingHelper
+            => BindingHelper
                 .GetMessageTypesFromAssemblies(assemblies)
                 .ForEach(BindMessage);
-        }
 
         #region Binding
 
@@ -62,13 +60,13 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
 
             IBindingDetails binding = _messageToBindingMap[messageType];
 
-            if (type.TryGetCustomAttribute(out RoutingPatternAttribute routingPattern))
+            if (type.TryGetCustomAttribute(out RoutingPatternAttribute? routingPattern))
             {
                 binding = new BindingDetails
                 {
                     ExchangeType = BrokerExchangeType.Topic,
                     Name = binding.Name,
-                    RoutingPattern = routingPattern.Pattern
+                    RoutingPattern = routingPattern!.Pattern
                 };
             }
 

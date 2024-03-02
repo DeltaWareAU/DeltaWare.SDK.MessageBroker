@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 

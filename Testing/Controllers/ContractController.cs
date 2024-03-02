@@ -1,4 +1,4 @@
-using DeltaWare.SDK.MessageBroker.Core.Broker;
+using DeltaWare.SDK.MessageBroker.Abstractions.Publisher;
 using Microsoft.AspNetCore.Mvc;
 using Testing.Messages;
 

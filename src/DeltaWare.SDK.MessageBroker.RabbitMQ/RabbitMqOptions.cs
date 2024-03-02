@@ -1,4 +1,4 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Broker;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
 using DeltaWare.SDK.MessageBroker.Core.Options;
 using DeltaWare.SDK.MessageBroker.RabbitMQ.Broker;
 using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;

@@ -1,7 +1,7 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Core.Broker;
-using DeltaWare.SDK.MessageBroker.Core.Handlers;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
+using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
+using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
+using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;

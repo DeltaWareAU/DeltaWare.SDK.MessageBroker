@@ -1,10 +1,9 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Binding.Attributes;
-using DeltaWare.SDK.MessageBroker.Core.Messages;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Attributes;
 
 namespace Testing.Messages
 {
     [DirectBinding("contract.create")]
-    public class CreateContractMessage : Message
+    public class CreateContractMessage
     {
         public string ContractId { get; set; }
 

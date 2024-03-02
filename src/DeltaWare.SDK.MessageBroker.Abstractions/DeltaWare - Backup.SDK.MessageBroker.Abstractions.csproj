@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+	  <Nullable>enable</Nullable>
+	  <Title>$(AssemblyName)</Title>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <Version>8.0.0.0-alpha</Version>
+	  <Author>Bradley Clarke</Author>
+	  <Company>DeltaWare</Company>
+	  <Product>DeltaWare.SDK.MessageBroker</Product>
+	  <PackageProjectUrl>https://github.com/DeltaWareAU/DeltaWare.SDK.MessageBroker</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/DeltaWareAU/DeltaWare.SDK.MessageBroker</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <PackageTags></PackageTags>
+	  <NeutralLanguage>en</NeutralLanguage>
+	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	  <IncludeSymbols>true</IncludeSymbols>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	  <PackageOutputPath>..\..\nuget.packages</PackageOutputPath>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\LICENSE.md" pack="true" PackagePath="." />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Broker\Hosting\" />
+	</ItemGroup>
+
+</Project>

@@ -13,10 +13,8 @@ namespace DeltaWare.SDK.MessageBroker.Core.Messages.Properties
         }
 
         public IDictionary<string, object> BuildProperties<T>(T message) where T : class
-        {
-            return _providers
+            => _providers
                 .SelectMany(provider => provider.GetProperties(message))
                 .ToDictionary(keyValuePair => keyValuePair.Key, keyValuePair => keyValuePair.Value);
-        }
     }
 }

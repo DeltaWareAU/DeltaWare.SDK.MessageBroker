@@ -36,7 +36,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Messages.Interception
         {
         }
 
-        public virtual ValueTask OnExceptionAsync(object message, Type messageType)
+        public virtual ValueTask OnExceptionAsync(object message, Type messageType, Exception exception)
         {
             return ValueTask.CompletedTask;
         }

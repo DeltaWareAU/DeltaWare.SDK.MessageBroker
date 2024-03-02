@@ -1,5 +1,4 @@
-﻿using DeltaWare.SDK.Core.Validators;
-using DeltaWare.SDK.MessageBroker.Core.Broker;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
 using DeltaWare.SDK.MessageBroker.Core.Options;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Broker;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Options;
@@ -18,7 +17,10 @@ namespace DeltaWare.SDK.MessageBroker
                 throw new ArgumentException();
             }
 
-            StringValidator.ThrowOnNullOrWhitespace(connectionString, nameof(connectionString));
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
 
             brokerOptions.Services
                 .AddSingleton<IServiceBusMessageBrokerOptions>(new ServiceBusMessageBrokerOptions

@@ -1,8 +1,10 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Messages;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates
 {
-    internal abstract class MessageGate<TKey> : MessageGate where TKey : Message
+    internal abstract class MessageGate<TKey> : MessageGate where TKey : class
     {
         private readonly TaskCompletionSource _isUnlocked = new();
 
