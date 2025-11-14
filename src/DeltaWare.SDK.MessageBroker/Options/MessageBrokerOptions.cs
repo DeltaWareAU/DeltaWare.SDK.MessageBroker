@@ -2,7 +2,7 @@
 
 namespace DeltaWare.SDK.MessageBroker.Core.Options
 {
-    public class MessageBrokerOptions : IMessageBrokerOptions
+    public sealed class MessageBrokerOptions
     {
         public IServiceCollection Services { get; }
 

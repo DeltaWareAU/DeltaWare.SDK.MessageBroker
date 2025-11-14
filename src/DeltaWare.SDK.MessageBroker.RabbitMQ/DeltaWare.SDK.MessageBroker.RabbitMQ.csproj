@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+      <TargetFrameworks>net10.0</TargetFrameworks>
 	  <Title>$(AssemblyName)</Title>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <Version>8.0.0.1-alpha</Version>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>

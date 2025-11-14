@@ -2,19 +2,19 @@
 using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Attributes;
 using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
 using DeltaWare.SDK.MessageBroker.Core.Binding.Helpers;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DeltaWare.SDK.MessageBroker.Core.Handlers;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
-    public class BindingDirector : IBindingDirector
+    internal sealed class BindingDirector : IBindingDirector
     {
-        private readonly Dictionary<Type, IBindingDetails> _messageToBindingMap = new();
+        private readonly Dictionary<Type, BindingDetails> _messageToBindingMap = new();
 
-        private readonly Dictionary<IBindingDetails, MessageHandlerBinding> _messageProcessors = new();
+        private readonly Dictionary<BindingDetails, MessageHandlerBinding> _messageProcessors = new();
 
         public BindingDirector()
         {
@@ -24,50 +24,39 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
             DiscoverProcessorsFromAssemblies(assemblies);
         }
 
-        public IEnumerable<IMessageHandlerBinding> GetHandlerBindings() => _messageProcessors.Select(map => map.Value);
+        public IEnumerable<IMessageHandlerBinding> GetHandlerBindings()
+            => _messageProcessors.Select(map => map.Value);
 
-        public IEnumerable<IBindingDetails> GetMessageBindings() => _messageToBindingMap.Select(map => map.Value);
+        public IEnumerable<BindingDetails> GetMessageBindings()
+            => _messageToBindingMap.Select(map => map.Value);
 
-        public IBindingDetails GetMessageBinding<T>() where T : class => _messageToBindingMap[typeof(T)];
+        public BindingDetails GetMessageBinding<T>() where T : class
+            => _messageToBindingMap[typeof(T)];
 
         private void DiscoverProcessorsFromAssemblies(params Assembly[] assemblies)
             => BindingHelper
                 .GetProcessorTypesFromAssemblies(assemblies)
                 .ForEach(BindProcessor);
 
-
-
         private void DiscoverMessagesFromAssemblies(params Assembly[] assemblies)
             => BindingHelper
                 .GetMessageTypesFromAssemblies(assemblies)
                 .ForEach(BindMessage);
 
-        #region Binding
-
         private void BindProcessor(Type type)
         {
             Type? messageType = type.GetGenericArguments(typeof(MessageHandler<>)).FirstOrDefault();
 
-            if (messageType == null)
+            if (messageType is not { IsClass: true })
             {
                 throw new Exception();
             }
 
-            if (!messageType.IsClass)
-            {
-                throw new Exception();
-            }
-
-            IBindingDetails binding = _messageToBindingMap[messageType];
+            BindingDetails binding = _messageToBindingMap[messageType];
 
             if (type.TryGetCustomAttribute(out RoutingPatternAttribute? routingPattern))
             {
-                binding = new BindingDetails
-                {
-                    ExchangeType = BrokerExchangeType.Topic,
-                    Name = binding.Name,
-                    RoutingPattern = routingPattern!.Pattern
-                };
+                binding = new BindingDetails(binding.Name, routingPattern!.Pattern, BrokerExchangeType.Topic);
             }
 
             if (!_messageProcessors.TryGetValue(binding, out MessageHandlerBinding? processorBinding))
@@ -89,11 +78,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
                 throw new Exception($"A message ({type.Name}) does not have a Binding Attribute Applied.");
             }
 
-            IBindingDetails bindingDetails = bindingAttribute.GetBindingDetails();
-
-            _messageToBindingMap.Add(type, bindingDetails);
+            _messageToBindingMap.Add(type, bindingAttribute.BindingDetails);
         }
-
-        #endregion
     }
 }

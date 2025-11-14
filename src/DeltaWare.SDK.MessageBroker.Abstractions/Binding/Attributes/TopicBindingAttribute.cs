@@ -1,9 +1,9 @@
-﻿using System;
-using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
+using System;
 
 namespace DeltaWare.SDK.MessageBroker.Abstractions.Binding.Attributes
 {
-    public class TopicBindingAttribute : MessageBrokerBindingAttribute
+    public sealed class TopicBindingAttribute : MessageBrokerBindingAttribute
     {
         public TopicBindingAttribute(string name, string routingPattern) : base(name, BrokerExchangeType.Topic, routingPattern)
         {

@@ -3,7 +3,7 @@
 namespace DeltaWare.SDK.MessageBroker.Abstractions.Binding.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class RoutingPatternAttribute : Attribute
+    public sealed class RoutingPatternAttribute : Attribute
     {
         public string Pattern { get; }
 

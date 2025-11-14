@@ -1,69 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
 using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
-/* Unmerged change from project 'DeltaWare.SDK.MessageBroker.ServiceBus (net7.0)'
-Before:
-using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
-After:
-using DeltaWare.SDK.MessageBroker.Abstractions.Messages.Properties;
-*/
-
-/* Unmerged change from project 'DeltaWare.SDK.MessageBroker.ServiceBus (net8.0)'
-Before:
-using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
-After:
-using DeltaWare.SDK.MessageBroker.Abstractions.Messages.Properties;
-*/
-using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
-using DeltaWare.SDK.MessageBroker.ServiceBus.Options;
-using Microsoft.Extensions.Logging;
-
-/* Unmerged change from project 'DeltaWare.SDK.MessageBroker.ServiceBus (net7.0)'
-Before:
 using DeltaWare.SDK.MessageBroker.Core.Broker;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Core.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
-After:
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Core.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Core.Broker;
-*/
-
-/* Unmerged change from project 'DeltaWare.SDK.MessageBroker.ServiceBus (net8.0)'
-Before:
-using DeltaWare.SDK.MessageBroker.Core.Broker;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Core.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
-After:
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Core.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Core.Broker;
-*/
-/* Unmerged change from project 'DeltaWare.SDK.MessageBroker.ServiceBus (net7.0)'
-Before:
-using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-After:
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 using DeltaWare.SDK.MessageBroker.ServiceBus.Options;
@@ -73,31 +13,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-*/
-
-/* Unmerged change from project 'DeltaWare.SDK.MessageBroker.ServiceBus (net8.0)'
-Before:
-using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
-After:
-using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
-using DeltaWare.SDK.MessageBroker.ServiceBus.Options;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-*/
-
+using DeltaWare.SDK.MessageBroker.Core.Binding;
 
 namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
 {
-    internal class ServiceBusMessageBroker : IMessageBroker, IAsyncDisposable
+    internal sealed class ServiceBusMessageBroker : IMessageBroker, IAsyncDisposable
     {
         private readonly ServiceBusClient _serviceBusClient;
 
@@ -107,7 +27,7 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
 
         private readonly IMessageSerializer _messageSerializer;
 
-        private readonly Dictionary<IBindingDetails, ServiceBusSender> _boundSenders = new();
+        private readonly Dictionary<BindingDetails, ServiceBusSender> _boundSenders = new();
 
         private IReadOnlyDictionary<IMessageHandlerBinding, ServiceBusProcessor> _handlerBindings;
 
@@ -119,7 +39,7 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
         public bool IsListening { get; private set; }
         public bool IsProcessing => _handlerBindings?.Values.Any(p => p.IsProcessing) ?? false;
 
-        public ServiceBusMessageBroker(ILogger<ServiceBusMessageBroker> logger, IServiceBusMessageBrokerOptions options, IMessageHandlerManager messageHandlerManager, IMessageSerializer messageSerializer, IBindingDirector bindingDirector, IPropertiesBuilder propertiesBuilder)
+        public ServiceBusMessageBroker(ILogger<ServiceBusMessageBroker> logger, ServiceBusMessageBrokerOptions options, IMessageHandlerManager messageHandlerManager, IMessageSerializer messageSerializer, IBindingDirector bindingDirector, IPropertiesBuilder propertiesBuilder)
         {
             _logger = logger;
             _serviceBusClient = new ServiceBusClient(options.ConnectionString);
@@ -129,9 +49,9 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
             _propertiesBuilder = propertiesBuilder;
         }
 
-        public Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default) where TMessage : class
+        public async Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default) where TMessage : class
         {
-            IBindingDetails bindingDetails = _bindingDirector.GetMessageBinding<TMessage>();
+            BindingDetails bindingDetails = _bindingDirector.GetMessageBinding<TMessage>();
 
             if (!_boundSenders.TryGetValue(bindingDetails, out ServiceBusSender sender))
             {
@@ -142,14 +62,14 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
 
             ServiceBusMessage serviceBusMessage = CreateServiceBusMessage(message);
 
-            return sender.SendMessageAsync(serviceBusMessage, cancellationToken);
+            await sender.SendMessageAsync(serviceBusMessage, cancellationToken);
         }
 
-        public void InitiateBindings()
+        public ValueTask InitiateBindingsAsync(CancellationToken cancellationToken)
         {
             if (Initiated)
             {
-                return;
+                throw new InvalidOperationException("Bindings have already been initiated.");
             }
 
             Dictionary<IMessageHandlerBinding, ServiceBusProcessor> handlerBindings = new Dictionary<IMessageHandlerBinding, ServiceBusProcessor>();
@@ -164,6 +84,8 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
             _handlerBindings = handlerBindings;
 
             Initiated = true;
+
+            return ValueTask.CompletedTask;
         }
 
         private ServiceBusProcessor InitiateBinding(IMessageHandlerBinding binding)
@@ -176,7 +98,7 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            processor.ProcessMessageAsync += args => OnMessageAsync(args, binding);
+            processor.ProcessMessageAsync += args => OnMessageAsync(args, binding, args.CancellationToken);
             processor.ProcessErrorAsync += args => OnErrorsAsync(args, binding);
 
             return processor;
@@ -226,13 +148,13 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
             return serviceBusMessage;
         }
 
-        private async Task OnMessageAsync(ProcessMessageEventArgs args, IMessageHandlerBinding binding)
+        private async Task OnMessageAsync(ProcessMessageEventArgs args, IMessageHandlerBinding binding, CancellationToken cancellationToken)
         {
-            IMessageHandlerResults results = await _messageHandlerManager.HandleMessageAsync(binding, args.Message.Body.ToString());
+            MessageHandlerResults results = await _messageHandlerManager.HandleMessageAsync(binding, args.Message.Body.ToString(), cancellationToken);
 
             if (results.WasSuccessful)
             {
-                await args.CompleteMessageAsync(args.Message);
+                await args.CompleteMessageAsync(args.Message, cancellationToken);
 
                 return;
             }
@@ -242,7 +164,7 @@ namespace DeltaWare.SDK.MessageBroker.ServiceBus.Broker
                 return;
             }
 
-            await args.DeadLetterMessageAsync(args.Message);
+            await args.DeadLetterMessageAsync(args.Message, cancellationToken: cancellationToken);
         }
 
         private Task OnErrorsAsync(ProcessErrorEventArgs args, IMessageHandlerBinding binding)

@@ -4,7 +4,7 @@ using System;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider
 {
-    internal class MessageGateProvider : IMessageGateProvider
+    internal sealed class MessageGateProvider : IMessageGateProvider
     {
         private readonly TimeSpan _defaultTimeout = TimeSpan.FromMinutes(5);
 
@@ -15,9 +15,7 @@ namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider
             _messageGateHandlerBinder = messageGateHandlerBinder;
         }
 
-        public MessageGate InitiateGate<TKey>(TKey key) where TKey : class
-        {
-            return new MessageGateHandler<TKey>(key, _defaultTimeout, _messageGateHandlerBinder);
-        }
+        public MessageGate InitiateGate<TKey>(TKey key) where TKey : class 
+            => new MessageGateHandler<TKey>(key, _defaultTimeout, _messageGateHandlerBinder);
     }
 }

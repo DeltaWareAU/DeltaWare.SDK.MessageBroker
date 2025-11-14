@@ -1,9 +1,8 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Publisher;
+﻿using DeltaWare.SDK.MessageBroker.Abstractions.Publisher;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeltaWare.SDK.MessageBroker.Abstractions.Broker
+namespace DeltaWare.SDK.MessageBroker.Core.Broker
 {
     public interface IMessageBroker : IMessagePublisher
     {
@@ -26,7 +25,7 @@ namespace DeltaWare.SDK.MessageBroker.Abstractions.Broker
         /// Binds the <see cref="IMessageHandler"/> to the <see cref="IMessageBroker"/>.
         /// </summary>
         /// <remarks>This is called by the <see cref="IMessageBrokerHost"/> before the <see cref="StartListeningAsync"/> Method.</remarks>
-        void InitiateBindings();
+        ValueTask InitiateBindingsAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// 

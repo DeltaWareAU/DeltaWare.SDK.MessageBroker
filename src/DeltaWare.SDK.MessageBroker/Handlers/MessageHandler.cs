@@ -1,16 +1,15 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
+﻿using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 {
     public abstract class MessageHandler<TMessage> : IMessageHandler where TMessage : class
     {
-        protected IMessageHandlerResult? Result { get; set; } = null;
+        protected MessageHandlerResult? Result { get; set; } = null;
 
-        public async ValueTask<IMessageHandlerResult> HandleAsync(object message)
+        public async ValueTask<MessageHandlerResult> HandleAsync(object message, CancellationToken cancellationToken)
         {
             TMessage messageToProcess;
 
@@ -25,7 +24,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 
             try
             {
-                await ProcessAsync(messageToProcess);
+                await ProcessAsync(messageToProcess, cancellationToken);
             }
             catch (Exception e)
             {
@@ -35,6 +34,6 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
             return Result ?? MessageHandlerResult.Success();
         }
 
-        protected abstract ValueTask ProcessAsync(TMessage message);
+        protected abstract ValueTask ProcessAsync(TMessage message, CancellationToken cancellationToken);
     }
 }

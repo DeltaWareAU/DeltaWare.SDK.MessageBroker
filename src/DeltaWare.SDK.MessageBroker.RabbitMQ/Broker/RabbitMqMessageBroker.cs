@@ -1,26 +1,26 @@
 ﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
 using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Broker;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Core.Binding;
 
 namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 {
-    internal class RabbitMqMessageBroker : IMessageBroker, IAsyncDisposable
+    internal sealed class RabbitMqMessageBroker : IMessageBroker, IAsyncDisposable
     {
-        private readonly IRabbitMqMessageBrokerOptions _options;
-
-        private readonly IConnection _connection;
+        private readonly RabbitMqMessageBrokerOptions _options;
 
         private readonly IBindingDirector _bindingDirector;
 
@@ -32,7 +32,9 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 
         private readonly ILogger _logger;
 
-        private IModel _channel;
+        private IConnection? _connection;
+
+        private IChannel _channel;
 
         private IReadOnlyDictionary<IMessageHandlerBinding, HandlerBindingConsumer> _handlerBindings;
 
@@ -40,7 +42,7 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
         public bool IsListening { get; private set; }
         public bool IsProcessing => _handlerBindings.Values.Any(h => h.IsRunning);
 
-        public RabbitMqMessageBroker(ILogger<RabbitMqMessageBroker> logger, IRabbitMqMessageBrokerOptions options, IBindingDirector bindingDirector, IMessageHandlerManager messageHandlerManager, IMessageSerializer messageSerializer, IPropertiesBuilder propertiesBuilder)
+        public RabbitMqMessageBroker(ILogger<RabbitMqMessageBroker> logger, RabbitMqMessageBrokerOptions options, IBindingDirector bindingDirector, IMessageHandlerManager messageHandlerManager, IMessageSerializer messageSerializer, IPropertiesBuilder propertiesBuilder)
         {
             _logger = logger;
             _options = options;
@@ -48,48 +50,56 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
             _messageHandlerManager = messageHandlerManager;
             _messageSerializer = messageSerializer;
             _propertiesBuilder = propertiesBuilder;
-            _connection = OpenConnection(options);
-
-            _connection.ConnectionShutdown += OnShutdown;
         }
 
-        public Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default) where TMessage : class
+        public async Task PublishAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default) where TMessage : class
         {
-            return Task.Run(() =>
+            if (_channel is null)
             {
-                IBindingDetails binding = _bindingDirector.GetMessageBinding<TMessage>();
+                throw new InvalidOperationException("Channel has not been created.");
+            }
 
-                string serializedMessage = _messageSerializer.Serialize(message);
+            BindingDetails binding = _bindingDirector.GetMessageBinding<TMessage>();
 
-                IBasicProperties properties = _channel.CreateBasicProperties();
+            string serializedMessage = _messageSerializer.Serialize(message);
 
-                foreach (KeyValuePair<string, object> property in _propertiesBuilder.BuildProperties(message))
-                {
-                    properties.Headers.Add(property);
-                }
+            var properties = new BasicProperties
+            {
+                Headers = new Dictionary<string, object>()
+            };
 
-                byte[] messageBuffer = Encoding.UTF8.GetBytes(serializedMessage);
+            foreach (KeyValuePair<string, object> property in _propertiesBuilder.BuildProperties(message))
+            {
+                properties.Headers[property.Key] = property.Value;
+            }
 
-                _channel.BasicPublish(binding.Name, binding.RoutingPattern ?? string.Empty, properties, messageBuffer);
-            }, cancellationToken);
+            byte[] messageBuffer = Encoding.UTF8.GetBytes(serializedMessage);
+
+            await _channel.BasicPublishAsync(
+                exchange: binding.Name,
+                routingKey: binding.RoutingPattern ?? string.Empty,
+                mandatory: false,
+                basicProperties: properties,
+                body: messageBuffer,
+                cancellationToken: cancellationToken);
         }
 
-        public void InitiateBindings()
+        public async ValueTask InitiateBindingsAsync(CancellationToken cancellationToken)
         {
             if (Initiated)
             {
-                return;
+                throw new InvalidOperationException("Bindings have already been initiated.");
             }
 
             Initiated = true;
 
+            await OpenConnectionAsync(_options, cancellationToken);
+
             Dictionary<IMessageHandlerBinding, HandlerBindingConsumer> handlerBindings = new Dictionary<IMessageHandlerBinding, HandlerBindingConsumer>();
 
-            var bindings = _bindingDirector.GetHandlerBindings();
-
-            foreach (IMessageHandlerBinding binding in bindings)
+            foreach (IMessageHandlerBinding binding in _bindingDirector.GetHandlerBindings())
             {
-                HandlerBindingConsumer consumer = new HandlerBindingConsumer(_messageHandlerManager, binding);
+                HandlerBindingConsumer consumer = new HandlerBindingConsumer(_channel, _messageHandlerManager, binding);
 
                 handlerBindings.Add(binding, consumer);
             }
@@ -97,61 +107,62 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
             _handlerBindings = handlerBindings;
         }
 
-        public Task StopListeningAsync(CancellationToken cancellationToken = default)
+        public async Task StopListeningAsync(CancellationToken cancellationToken = default)
         {
             if (!IsListening)
             {
-                return Task.CompletedTask;
+                return;
             }
 
             IsListening = false;
 
-            _channel.Close();
-            _channel.Dispose();
+            await _channel.CloseAsync(cancellationToken);
+            await _channel.DisposeAsync();
+
             _channel = null;
 
             _logger.LogInformation("Message Broker has Stopped Listening for Incoming Messages.");
-
-            return Task.CompletedTask;
         }
 
-        public Task StartListeningAsync(CancellationToken cancellationToken = default)
+        public async Task StartListeningAsync(CancellationToken cancellationToken = default)
         {
+            if (!Initiated)
+            {
+                throw new InvalidOperationException("Bindings have not been initiated.");
+            }
+
             if (IsListening)
             {
-                return Task.CompletedTask;
+                throw new InvalidOperationException("Broker is already Listening");
             }
 
             IsListening = true;
 
-            _channel = _connection.CreateModel();
+            _channel = await _connection!.CreateChannelAsync(cancellationToken: cancellationToken);
 
             foreach ((IMessageHandlerBinding binding, HandlerBindingConsumer consumer) in _handlerBindings)
             {
-                consumer.Channel = _channel;
-
-                switch (binding.Details.ExchangeType)
+                var queueName = binding.Details.ExchangeType switch
                 {
-                    case BrokerExchangeType.Fanout:
-                    case BrokerExchangeType.Direct:
-                        _channel.BasicConsume(binding.Details.Name, false, consumer);
-                        break;
-                    case BrokerExchangeType.Topic:
-                        _channel.BasicConsume(binding.Details.RoutingPattern, false, consumer);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                    BrokerExchangeType.Fanout => binding.Details.Name,
+                    BrokerExchangeType.Direct => binding.Details.Name,
+                    BrokerExchangeType.Topic => binding.Details.RoutingPattern!, // assuming this really is your queue
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+                await _channel.BasicConsumeAsync(
+                    queue: queueName,
+                    autoAck: false,
+                    consumer: consumer,
+                    cancellationToken: cancellationToken);
             }
 
-            _logger.LogInformation("Message Broker has Started Listening for Incoming Messages.");
-
-            return Task.CompletedTask;
+            _logger.LogInformation("Rabbit MQ Message Broker has Started Listening for Incoming Messages.");
         }
 
-        private IConnection OpenConnection(IRabbitMqMessageBrokerOptions options)
+        private async Task OpenConnectionAsync(RabbitMqMessageBrokerOptions options, CancellationToken cancellationToken)
         {
-            ConnectionFactory factory = new ConnectionFactory
+            var factory = new ConnectionFactory
             {
                 UserName = options.UserName,
                 Password = options.Password,
@@ -160,12 +171,13 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
                 Port = options.Port
             };
 
-            return factory.CreateConnection();
+            _connection = await factory.CreateConnectionAsync(cancellationToken);
+            _connection.ConnectionShutdownAsync += OnConnectionShutdownAsync;
         }
 
-        private async void OnShutdown(object sender, ShutdownEventArgs args)
+        private async Task OnConnectionShutdownAsync(object sender, ShutdownEventArgs @event)
         {
-            _logger.LogWarning("Rabbit MQ Host offline, Message Received: {message}", args.ReplyText);
+            _logger.LogWarning("Rabbit MQ Host offline, Message Received: {message}", @event.ReplyText);
 
             await StopListeningAsync();
         }
@@ -193,8 +205,11 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
                     await StopListeningAsync();
                 }
 
-                _connection?.Close();
-                _connection?.Dispose();
+                if (_connection is not null)
+                {
+                    await _connection.CloseAsync();
+                    await _connection.DisposeAsync();
+                }
             }
 
             _disposed = true;

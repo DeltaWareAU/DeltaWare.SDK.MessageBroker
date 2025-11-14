@@ -1,7 +1,7 @@
 ﻿namespace DeltaWare.SDK.MessageBroker.ServiceBus.Options
 {
-    public class ServiceBusMessageBrokerOptions : IServiceBusMessageBrokerOptions
+    public sealed record ServiceBusMessageBrokerOptions
     {
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; init; }
     }
 }

@@ -1,19 +1,19 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Binding
 {
-    internal class MessageHandlerBinding : IMessageHandlerBinding
+    public class MessageHandlerBinding
     {
         private readonly HashSet<Type> _processorTypes = new();
 
-        public IBindingDetails Details { get; }
-        public IReadOnlyList<Type> HandlerTypes => _processorTypes.ToList();
+        public BindingDetails Details { get; }
         public Type MessageType { get; }
+        public IReadOnlyList<Type> HandlerTypes => _processorTypes.ToList();
 
-        public MessageHandlerBinding(IBindingDetails bindingDetails, Type messageType)
+        public MessageHandlerBinding(BindingDetails bindingDetails, Type messageType)
         {
             Details = bindingDetails;
             MessageType = messageType;

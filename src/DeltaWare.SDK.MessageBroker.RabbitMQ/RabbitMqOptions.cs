@@ -1,4 +1,4 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
+﻿using DeltaWare.SDK.MessageBroker.Core.Broker;
 using DeltaWare.SDK.MessageBroker.Core.Options;
 using DeltaWare.SDK.MessageBroker.RabbitMQ.Broker;
 using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;
@@ -10,19 +10,14 @@ namespace DeltaWare.SDK.MessageBroker
 {
     public static class RabbitMqOptions
     {
-        public static void UseRabbitMQ(this IMessageBrokerOptions options, Action<RabbitMqMessageBrokerOptions> optionsAction)
+        public static void UseRabbitMQ(this MessageBrokerOptions options, Action<RabbitMqMessageBrokerOptions> optionsAction)
         {
-            if (options is not MessageBrokerOptions brokerOptions)
-            {
-                throw new ArgumentException();
-            }
-
             var rabbitMqOptions = new RabbitMqMessageBrokerOptions();
 
             optionsAction.Invoke(rabbitMqOptions);
 
-            brokerOptions.Services
-                .AddSingleton<IRabbitMqMessageBrokerOptions>(rabbitMqOptions)
+            options.Services
+                .AddSingleton(rabbitMqOptions)
                 .AddSingleton<IMessageBroker, RabbitMqMessageBroker>();
         }
     }

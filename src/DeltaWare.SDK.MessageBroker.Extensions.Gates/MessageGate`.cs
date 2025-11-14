@@ -30,15 +30,11 @@ namespace DeltaWare.SDK.MessageBroker.Extensions.Gates
             return true;
         }
 
-        public override Task WaitAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
-        {
-            return WaitUntilCountOrTimeoutAsync((int)timeout.TotalMilliseconds, cancellationToken);
-        }
+        public override Task WaitAsync(TimeSpan timeout, CancellationToken cancellationToken = default) 
+            => WaitUntilCountOrTimeoutAsync((int)timeout.TotalMilliseconds, cancellationToken);
 
-        public override Task WaitAsync(CancellationToken cancellationToken = default)
-        {
-            return WaitUntilCountOrTimeoutAsync((int)_timeout.TotalMilliseconds, cancellationToken);
-        }
+        public override Task WaitAsync(CancellationToken cancellationToken = default) 
+            => WaitUntilCountOrTimeoutAsync((int)_timeout.TotalMilliseconds, cancellationToken);
 
         private async Task WaitUntilCountOrTimeoutAsync(int millisecondsTimeout, CancellationToken cancellationToken)
         {

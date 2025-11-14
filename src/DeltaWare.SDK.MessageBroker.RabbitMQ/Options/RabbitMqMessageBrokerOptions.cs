@@ -2,12 +2,12 @@
 {
 
 
-    public class RabbitMqMessageBrokerOptions : IRabbitMqMessageBrokerOptions
+    public sealed record RabbitMqMessageBrokerOptions
     {
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string HostName { get; set; }
-        public string VirtualHost { get; set; }
-        public int Port { get; set; }
+        public string UserName { get; init; }
+        public string Password { get; init; }
+        public string HostName { get; init; }
+        public string VirtualHost { get; init; }
+        public int Port { get; init; }
     }
 }

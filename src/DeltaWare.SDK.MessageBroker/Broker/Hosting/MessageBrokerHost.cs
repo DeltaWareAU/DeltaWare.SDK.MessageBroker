@@ -1,12 +1,11 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Broker;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Broker.Hosting
 {
-    internal class MessageBrokerHost : IHostedService
+    internal sealed class MessageBrokerHost : IHostedService
     {
         private readonly IMessageBroker _messageBroker;
 
@@ -26,7 +25,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Broker.Hosting
             {
                 _logger.LogDebug("Initiating Message Consumer Bindings");
 
-                _messageBroker.InitiateBindings();
+                await _messageBroker.InitiateBindingsAsync(cancellationToken);
             }
 
             await _messageBroker.StartListeningAsync(cancellationToken);

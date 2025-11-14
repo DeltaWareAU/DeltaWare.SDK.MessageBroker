@@ -1,39 +1,40 @@
 ﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
+using DeltaWare.SDK.MessageBroker.Core.Handlers;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 {
-    internal class HandlerBindingConsumer : DefaultBasicConsumer
+    internal sealed class HandlerBindingConsumer : AsyncEventingBasicConsumer
     {
         private readonly IMessageHandlerManager _messageHandlerManager;
 
         private readonly IMessageHandlerBinding _binding;
 
-        public IModel Channel { get; set; }
-
-        public HandlerBindingConsumer(IMessageHandlerManager messageHandlerManager, IMessageHandlerBinding binding)
+        public HandlerBindingConsumer(IChannel channel, IMessageHandlerManager messageHandlerManager, IMessageHandlerBinding binding) : base(channel)
         {
             _messageHandlerManager = messageHandlerManager;
             _binding = binding;
         }
 
-        public override async void HandleBasicDeliver(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> body)
+        public override async Task HandleBasicDeliverAsync(string consumerTag, ulong deliveryTag, bool redelivered, string exchange, string routingKey, IReadOnlyBasicProperties properties, ReadOnlyMemory<byte> body, CancellationToken cancellationToken)
         {
             string message = Encoding.UTF8.GetString(body.ToArray());
 
-            IMessageHandlerResults results = await _messageHandlerManager.HandleMessageAsync(_binding, message);
+            MessageHandlerResults results = await _messageHandlerManager.HandleMessageAsync(_binding, message, cancellationToken);
 
             if (results.WasSuccessful)
             {
-                Channel.BasicAck(deliveryTag, false);
+                await Channel.BasicAckAsync(deliveryTag, false, cancellationToken);
             }
             else
             {
-                Channel.BasicNack(deliveryTag, false, results.Retry);
+                await Channel.BasicNackAsync(deliveryTag, false, results.Retry, cancellationToken);
             }
         }
     }

@@ -3,7 +3,7 @@ using System;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler
 {
-    internal class MessageGateHandler<TKey> : MessageGate<TKey>, IMessageGateHandler where TKey : class
+    internal sealed class MessageGateHandler<TKey> : MessageGate<TKey>, IMessageGateHandler where TKey : class
     {
         private readonly IMessageGateHandlerBinder _binder;
 
@@ -15,10 +15,7 @@ namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler
 
         public void TryOpen(object message)
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
+            ObjectDisposedException.ThrowIf(_disposed, this);
 
             if (message is TKey key)
             {

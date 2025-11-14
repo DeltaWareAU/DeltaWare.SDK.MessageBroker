@@ -1,46 +1,34 @@
 ﻿using System;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Handlers.Results
 {
-    public class MessageHandlerResult : IMessageHandlerResult
+    public record MessageHandlerResult
     {
-        public bool Retry { get; init; }
+        public bool WasSuccessful { get; }
+        public bool Retry { get; }
+        public bool HasException { get; }
+        public Exception? Exception { get; }
+        public string? Message { get; }
 
-        public bool WasSuccessful { get; init; }
-
-        public bool HasException => Exception != null;
-
-        public Exception? Exception { get; init; }
-
-        public string? Message { get; init; }
-
-        public static IMessageHandlerResult Success() => new MessageHandlerResult
+        public MessageHandlerResult(bool wasSuccessful, bool retry = false, Exception? exception = null, string? message = null)
         {
-            WasSuccessful = true
-        };
+            WasSuccessful = wasSuccessful;
+            Retry = retry;
+            HasException = exception != null;
+            Exception = exception;
+            Message = message;
+        }
 
-        public static IMessageHandlerResult Failure(string message, bool retry = false) => new MessageHandlerResult
-        {
-            Message = message,
-            Retry = retry,
-            WasSuccessful = false
-        };
+        public static MessageHandlerResult Success()
+            => new(true);
 
-        public static IMessageHandlerResult Failure(Exception exception, bool retry = false) => new MessageHandlerResult
-        {
-            Exception = exception,
-            Message = exception.Message,
-            WasSuccessful = false,
-            Retry = retry
-        };
+        public static MessageHandlerResult Failure(string message, bool retry = false)
+            => new(false, retry, null, message);
 
-        public static IMessageHandlerResult Failure(Exception exception, string message, bool retry = false) => new MessageHandlerResult
-        {
-            Exception = exception,
-            Message = message,
-            WasSuccessful = false,
-            Retry = retry
-        };
+        public static MessageHandlerResult Failure(Exception ex, bool retry = false)
+            => new(false, retry, ex, ex.Message);
+
+        public static MessageHandlerResult Failure(Exception ex, string message, bool retry = false)
+            => new(false, retry, ex, message);
     }
 }

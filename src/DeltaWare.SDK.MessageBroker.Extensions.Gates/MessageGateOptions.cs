@@ -10,14 +10,9 @@ namespace DeltaWare.SDK.MessageBroker
 {
     public static class MessageGateOptions
     {
-        public static void EnableMessageGates(this IMessageBrokerOptions options)
+        public static void EnableMessageGates(this MessageBrokerOptions options)
         {
-            if (options is not MessageBrokerOptions brokerOptions)
-            {
-                throw new ArgumentException();
-            }
-
-            brokerOptions.Services
+            options.Services
                 .AddSingleton<MessageGateInterceptor>()
                 .AddSingleton<MessageInterceptor>(p => p.GetRequiredService<MessageGateInterceptor>())
                 .AddSingleton<IMessageGateHandlerBinder>(p => p.GetRequiredService<MessageGateInterceptor>())

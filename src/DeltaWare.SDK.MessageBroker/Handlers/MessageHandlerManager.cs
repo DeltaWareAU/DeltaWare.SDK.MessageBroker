@@ -1,13 +1,12 @@
 ﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers;
-using DeltaWare.SDK.MessageBroker.Abstractions.Handlers.Results;
+using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Interception;
 using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
 
 namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 {
@@ -30,7 +29,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
             _logger = logger;
         }
 
-        public async Task<IMessageHandlerResults> HandleMessageAsync(IMessageHandlerBinding handlerBinding, string messageData)
+        public async Task<MessageHandlerResults> HandleMessageAsync(IMessageHandlerBinding handlerBinding, string messageData, CancellationToken cancellationToken)
         {
             object? message;
 
@@ -50,21 +49,21 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
                 return MessageHandlerResults.Failure(e, "An exception was encountered whilst deserializing the message");
             }
 
-            _messageInterceptor?.OnMessageReceived(message, handlerBinding.MessageType);
+            await _messageInterceptor.OnMessageReceivedAsync(message, handlerBinding.MessageType);
 
             await (ValueTask)_messageInterceptor?.OnMessageReceivedAsync(message, handlerBinding.MessageType)!;
 
-            IMessageHandlerResult[] results = new IMessageHandlerResult[handlerBinding.HandlerTypes.Count];
+            MessageHandlerResult[] results = new MessageHandlerResult[handlerBinding.HandlerTypes.Count];
 
             for (int i = 0; i < handlerBinding.HandlerTypes.Count; i++)
             {
-                results[i] = await ExecuteMessageHandlerAsync(message, handlerBinding.MessageType, handlerBinding.HandlerTypes[i]);
+                results[i] = await ExecuteMessageHandlerAsync(message, handlerBinding.MessageType, handlerBinding.HandlerTypes[i], cancellationToken);
             }
 
             return new MessageHandlerResults(results);
         }
 
-        private async Task<IMessageHandlerResult> ExecuteMessageHandlerAsync(object message, Type messageType, Type handlerType)
+        private async Task<MessageHandlerResult> ExecuteMessageHandlerAsync(object message, Type messageType, Type handlerType, CancellationToken cancellationToken)
         {
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
 
@@ -81,20 +80,20 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
                 return MessageHandlerResult.Failure(e, $"An exception was encountered whilst instantiating {handlerType.Name}");
             }
 
-            _messageInterceptor?.OnMessageExecuting(message, messageType);
+            await _messageInterceptor.OnMessageExecutingAsync(message, messageType);
 
             await (ValueTask)_messageInterceptor?.OnMessageExecutingAsync(message, messageType)!;
 
-            IMessageHandlerResult result = await messageHandler.HandleAsync(message);
+            MessageHandlerResult result = await messageHandler.HandleAsync(message, cancellationToken);
 
             if (result.HasException)
             {
-                _messageInterceptor?.OnException(message, messageType, result.Exception!);
+                _messageInterceptor.OnExceptionAsync(message, messageType, result.Exception!);
 
                 await (ValueTask)_messageInterceptor?.OnExceptionAsync(message, messageType, result.Exception!)!;
             }
 
-            _messageInterceptor?.OnMessageExecuted(message, messageType);
+            _messageInterceptor.OnMessageExecutedAsync(message, messageType);
 
             await (ValueTask)_messageInterceptor?.OnMessageExecutedAsync(message, messageType)!;
 

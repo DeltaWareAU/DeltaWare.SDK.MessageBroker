@@ -1,6 +1,6 @@
-﻿// ReSharper disable once CheckNamespace
-using System.Reflection;
+﻿using System.Reflection;
 
+// ReSharper disable once CheckNamespace
 namespace System
 {
     internal static class TypeExtensions
