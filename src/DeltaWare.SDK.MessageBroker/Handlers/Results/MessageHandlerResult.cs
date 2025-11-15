@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Handlers.Results
+namespace DeltaWare.SDK.MessageBroker.Handlers.Results
 {
     public record MessageHandlerResult
     {

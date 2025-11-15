@@ -1,14 +1,14 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Interception;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Binding;
+using DeltaWare.SDK.MessageBroker.Handlers.Results;
+using DeltaWare.SDK.MessageBroker.Messages.Interception;
+using DeltaWare.SDK.MessageBroker.Messages.Serialization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Handlers
+namespace DeltaWare.SDK.MessageBroker.Handlers
 {
     internal class MessageHandlerManager : IMessageHandlerManager
     {
@@ -29,7 +29,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
             _logger = logger;
         }
 
-        public async Task<MessageHandlerResults> HandleMessageAsync(IMessageHandlerBinding handlerBinding, string messageData, CancellationToken cancellationToken)
+        public async Task<MessageHandlerResults> HandleMessageAsync(MessageHandlerBinding handlerBinding, string messageData, CancellationToken cancellationToken)
         {
             object? message;
 
@@ -53,7 +53,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 
             await (ValueTask)_messageInterceptor?.OnMessageReceivedAsync(message, handlerBinding.MessageType)!;
 
-            MessageHandlerResult[] results = new MessageHandlerResult[handlerBinding.HandlerTypes.Count];
+            var results = new MessageHandlerResult[handlerBinding.HandlerTypes.Count];
 
             for (int i = 0; i < handlerBinding.HandlerTypes.Count; i++)
             {
@@ -82,9 +82,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Handlers
 
             await _messageInterceptor.OnMessageExecutingAsync(message, messageType);
 
-            await (ValueTask)_messageInterceptor?.OnMessageExecutingAsync(message, messageType)!;
-
-            MessageHandlerResult result = await messageHandler.HandleAsync(message, cancellationToken);
+            var result = await messageHandler.HandleAsync(message, cancellationToken);
 
             if (result.HasException)
             {

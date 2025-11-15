@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Messages.Interception
+namespace DeltaWare.SDK.MessageBroker.Messages.Interception
 {
     public abstract class MessageInterceptor
     {

@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Broker.Hosting
+namespace DeltaWare.SDK.MessageBroker.Broker.Hosting
 {
     internal sealed class MessageBrokerHost : IHostedService
     {

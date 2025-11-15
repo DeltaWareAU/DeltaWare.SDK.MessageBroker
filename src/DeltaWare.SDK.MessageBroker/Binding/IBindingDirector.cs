@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Binding
+namespace DeltaWare.SDK.MessageBroker.Binding
 {
     public interface IBindingDirector
     {

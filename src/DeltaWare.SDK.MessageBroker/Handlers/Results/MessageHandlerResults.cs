@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Handlers.Results
+namespace DeltaWare.SDK.MessageBroker.Handlers.Results
 {
     public class MessageHandlerResults
     {

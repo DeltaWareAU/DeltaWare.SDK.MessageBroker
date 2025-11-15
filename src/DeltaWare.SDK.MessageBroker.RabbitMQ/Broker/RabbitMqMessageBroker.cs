@@ -1,9 +1,5 @@
 ﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
 using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Core.Broker;
-using DeltaWare.SDK.MessageBroker.Core.Handlers;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Properties;
-using DeltaWare.SDK.MessageBroker.Core.Messages.Serialization;
 using DeltaWare.SDK.MessageBroker.RabbitMQ.Options;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -14,7 +10,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using DeltaWare.SDK.MessageBroker.Core.Binding;
+using DeltaWare.SDK.MessageBroker.Binding;
+using DeltaWare.SDK.MessageBroker.Broker;
+using DeltaWare.SDK.MessageBroker.Handlers;
+using DeltaWare.SDK.MessageBroker.Messages.Properties;
+using DeltaWare.SDK.MessageBroker.Messages.Serialization;
 
 namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 {
@@ -36,7 +36,7 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 
         private IChannel _channel;
 
-        private IReadOnlyDictionary<IMessageHandlerBinding, HandlerBindingConsumer> _handlerBindings;
+        private IReadOnlyDictionary<MessageHandlerBinding, HandlerBindingConsumer> _handlerBindings;
 
         public bool Initiated { get; private set; }
         public bool IsListening { get; private set; }
@@ -59,9 +59,9 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
                 throw new InvalidOperationException("Channel has not been created.");
             }
 
-            BindingDetails binding = _bindingDirector.GetMessageBinding<TMessage>();
+            var binding = _bindingDirector.GetMessageBinding<TMessage>();
 
-            string serializedMessage = _messageSerializer.Serialize(message);
+            var serializedMessage = _messageSerializer.Serialize(message);
 
             var properties = new BasicProperties
             {
@@ -73,7 +73,7 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
                 properties.Headers[property.Key] = property.Value;
             }
 
-            byte[] messageBuffer = Encoding.UTF8.GetBytes(serializedMessage);
+            var messageBuffer = Encoding.UTF8.GetBytes(serializedMessage);
 
             await _channel.BasicPublishAsync(
                 exchange: binding.Name,
@@ -95,11 +95,11 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 
             await OpenConnectionAsync(_options, cancellationToken);
 
-            Dictionary<IMessageHandlerBinding, HandlerBindingConsumer> handlerBindings = new Dictionary<IMessageHandlerBinding, HandlerBindingConsumer>();
+            var handlerBindings = new Dictionary<MessageHandlerBinding, HandlerBindingConsumer>();
 
-            foreach (IMessageHandlerBinding binding in _bindingDirector.GetHandlerBindings())
+            foreach (var binding in _bindingDirector.GetHandlerBindings())
             {
-                HandlerBindingConsumer consumer = new HandlerBindingConsumer(_channel, _messageHandlerManager, binding);
+                var consumer = new HandlerBindingConsumer(_channel, _messageHandlerManager, binding);
 
                 handlerBindings.Add(binding, consumer);
             }
@@ -140,7 +140,7 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 
             _channel = await _connection!.CreateChannelAsync(cancellationToken: cancellationToken);
 
-            foreach ((IMessageHandlerBinding binding, HandlerBindingConsumer consumer) in _handlerBindings)
+            foreach ((var binding, var consumer) in _handlerBindings)
             {
                 var queueName = binding.Details.ExchangeType switch
                 {

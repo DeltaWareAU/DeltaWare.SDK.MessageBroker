@@ -1,14 +1,14 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Attributes;
-using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
-using DeltaWare.SDK.MessageBroker.Core.Binding.Helpers;
-using DeltaWare.SDK.MessageBroker.Core.Handlers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
+using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Attributes;
+using DeltaWare.SDK.MessageBroker.Abstractions.Binding.Enums;
+using DeltaWare.SDK.MessageBroker.Binding.Helpers;
+using DeltaWare.SDK.MessageBroker.Handlers;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Binding
+namespace DeltaWare.SDK.MessageBroker.Binding
 {
     internal sealed class BindingDirector : IBindingDirector
     {
@@ -24,7 +24,7 @@ namespace DeltaWare.SDK.MessageBroker.Core.Binding
             DiscoverProcessorsFromAssemblies(assemblies);
         }
 
-        public IEnumerable<IMessageHandlerBinding> GetHandlerBindings()
+        public IEnumerable<MessageHandlerBinding> GetHandlerBindings()
             => _messageProcessors.Select(map => map.Value);
 
         public IEnumerable<BindingDetails> GetMessageBindings()

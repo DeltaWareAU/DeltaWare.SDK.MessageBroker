@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.Core.csproj" />
+    <ProjectReference Include="..\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

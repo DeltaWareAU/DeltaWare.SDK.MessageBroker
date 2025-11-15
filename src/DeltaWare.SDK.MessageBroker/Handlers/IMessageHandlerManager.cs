@@ -1,12 +1,12 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Binding;
+using DeltaWare.SDK.MessageBroker.Handlers.Results;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Handlers
+namespace DeltaWare.SDK.MessageBroker.Handlers
 {
     public interface IMessageHandlerManager
     {
-        Task<MessageHandlerResults> HandleMessageAsync(IMessageHandlerBinding handlerBinding, string messageData, CancellationToken cancellationToken);
+        Task<MessageHandlerResults> HandleMessageAsync(MessageHandlerBinding handlerBinding, string messageData, CancellationToken cancellationToken);
     }
 }

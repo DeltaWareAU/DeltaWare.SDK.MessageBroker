@@ -8,16 +8,16 @@ namespace System
     {
         public static object CreateInstance(this IServiceProvider provider, Type type)
         {
-            ConstructorInfo[] constructors = type.GetConstructors();
+            var constructors = type.GetConstructors();
 
             if (constructors.Length > 1)
             {
                 throw new ArgumentException($"Only one construct may be present for the given type {type.Name}.", nameof(type));
             }
 
-            ConstructorInfo constructor = constructors.First();
+            var constructor = constructors.First();
 
-            ParameterInfo[] parameters = constructor.GetParameters();
+            var parameters = constructor.GetParameters();
 
             object[] arguments = new object[parameters.Length];
 

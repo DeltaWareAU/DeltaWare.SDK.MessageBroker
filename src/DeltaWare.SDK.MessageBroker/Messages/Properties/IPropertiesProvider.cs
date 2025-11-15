@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Messages.Properties
+namespace DeltaWare.SDK.MessageBroker.Messages.Properties
 {
     public interface IPropertiesProvider
     {

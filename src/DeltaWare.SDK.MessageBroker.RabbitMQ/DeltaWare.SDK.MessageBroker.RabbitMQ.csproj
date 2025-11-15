@@ -30,12 +30,12 @@
     <PackageReference Include="RabbitMQ.Client" Version="7.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.Core.csproj" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<None Include="..\..\LICENSE.md" pack="true" PackagePath="." />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DeltaWare.SDK.MessageBroker\DeltaWare.SDK.MessageBroker.csproj" />
 	</ItemGroup>
 
 </Project>

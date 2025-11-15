@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Binding
+namespace DeltaWare.SDK.MessageBroker.Binding
 {
     public class MessageHandlerBinding
     {

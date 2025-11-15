@@ -1,8 +1,8 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Handlers.Results;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Handlers
+namespace DeltaWare.SDK.MessageBroker.Handlers
 {
     public interface IMessageHandler
     {

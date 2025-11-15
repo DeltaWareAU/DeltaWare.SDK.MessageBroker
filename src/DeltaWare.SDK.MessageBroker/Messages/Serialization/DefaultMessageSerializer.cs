@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Messages.Serialization
+namespace DeltaWare.SDK.MessageBroker.Messages.Serialization
 {
     internal sealed class DefaultMessageSerializer : IMessageSerializer
     {

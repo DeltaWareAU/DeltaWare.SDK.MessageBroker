@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeltaWare.SDK.MessageBroker.Core.Messages.Serialization
+namespace DeltaWare.SDK.MessageBroker.Messages.Serialization
 {
     public interface IMessageSerializer
     {

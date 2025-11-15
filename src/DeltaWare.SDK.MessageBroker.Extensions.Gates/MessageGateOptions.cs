@@ -1,9 +1,8 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Messages.Interception;
-using DeltaWare.SDK.MessageBroker.Core.Options;
-using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
+﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor;
 using DeltaWare.SDK.MessageBroker.Extensions.Gates.Provider;
+using DeltaWare.SDK.MessageBroker.Messages.Interception;
+using DeltaWare.SDK.MessageBroker.Options;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 // ReSharper disable once CheckNamespace
 namespace DeltaWare.SDK.MessageBroker

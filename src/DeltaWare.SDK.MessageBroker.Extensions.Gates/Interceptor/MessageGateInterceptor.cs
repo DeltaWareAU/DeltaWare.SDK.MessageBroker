@@ -1,9 +1,9 @@
-﻿using DeltaWare.SDK.MessageBroker.Core.Messages.Interception;
-using DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler;
+﻿using DeltaWare.SDK.MessageBroker.Extensions.Gates.Handler;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Messages.Interception;
 
 namespace DeltaWare.SDK.MessageBroker.Extensions.Gates.Interceptor
 {

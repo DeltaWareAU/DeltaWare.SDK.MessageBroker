@@ -1,4 +1,7 @@
 ﻿// ReSharper disable once CheckNamespace
+
+using DeltaWare.SDK.MessageBroker.Messages.Properties;
+
 namespace DeltaWare.SDK.MessageBroker.Core.Messages.Properties
 {
     public static class PropertiesContextExtensions

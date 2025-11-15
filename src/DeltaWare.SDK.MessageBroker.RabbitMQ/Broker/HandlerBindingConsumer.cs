@@ -1,12 +1,12 @@
-﻿using DeltaWare.SDK.MessageBroker.Abstractions.Binding;
-using DeltaWare.SDK.MessageBroker.Core.Handlers;
-using DeltaWare.SDK.MessageBroker.Core.Handlers.Results;
+﻿using DeltaWare.SDK.MessageBroker.Handlers;
+using DeltaWare.SDK.MessageBroker.Handlers.Results;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DeltaWare.SDK.MessageBroker.Binding;
 
 namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
 {
@@ -14,9 +14,9 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
     {
         private readonly IMessageHandlerManager _messageHandlerManager;
 
-        private readonly IMessageHandlerBinding _binding;
+        private readonly MessageHandlerBinding _binding;
 
-        public HandlerBindingConsumer(IChannel channel, IMessageHandlerManager messageHandlerManager, IMessageHandlerBinding binding) : base(channel)
+        public HandlerBindingConsumer(IChannel channel, IMessageHandlerManager messageHandlerManager, MessageHandlerBinding binding) : base(channel)
         {
             _messageHandlerManager = messageHandlerManager;
             _binding = binding;
@@ -26,7 +26,7 @@ namespace DeltaWare.SDK.MessageBroker.RabbitMQ.Broker
         {
             string message = Encoding.UTF8.GetString(body.ToArray());
 
-            MessageHandlerResults results = await _messageHandlerManager.HandleMessageAsync(_binding, message, cancellationToken);
+            var results = await _messageHandlerManager.HandleMessageAsync(_binding, message, cancellationToken);
 
             if (results.WasSuccessful)
             {

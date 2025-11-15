@@ -9,7 +9,7 @@ namespace DeltaWare.SDK.MessageBroker.Abstractions.Publisher
     {
         public static Task PublishAsync<TMessage>(this IMessagePublisher messagePublisher, Action<TMessage> messageBuilder, CancellationToken cancellationToken = default) where TMessage : class, new()
         {
-            TMessage messageToSend = new TMessage();
+            var messageToSend = new TMessage();
 
             messageBuilder.Invoke(messageToSend);
 
